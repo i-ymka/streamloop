@@ -1,0 +1,26 @@
+# AI & project docs (not for repo)
+TECH_SPEC.md
+ARCHITECTURE.md
+DECISION_LOG.md
+MEMORY.md
+SPEC_*.md
+TASKS.md
+
+# Env
+.env
+.env.*
+
+# Dependencies & build
+__pycache__/
+node_modules/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.astro/
+
+# Logs & system
+*.log
+.DS_Store
+Thumbs.db
