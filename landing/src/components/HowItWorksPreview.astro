@@ -8,11 +8,12 @@
 
   <!-- SVG filter: animated water distortion -->
   <svg class="absolute" style="width:0;height:0;" aria-hidden="true">
-    <filter id="water-ripple" x="-5%" y="-5%" width="110%" height="110%">
+    <filter id="water-ripple" x="-50%" y="-50%" width="200%" height="200%"
+            color-interpolation-filters="sRGB">
       <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
         <animate attributeName="baseFrequency"
-          values="0.016 0.046;0.018 0.049;0.016 0.046"
-          dur="30s" repeatCount="indefinite"
+          values="0.015 0.044;0.019 0.052;0.015 0.044"
+          dur="16s" repeatCount="indefinite"
           calcMode="spline"
           keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
       </feTurbulence>
@@ -25,19 +26,22 @@
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
 
-  <!-- Mirror bars: exact Hero CSS, scaleY(-1), SVG water distortion -->
+  <!-- Mirror bars with edge bleed for displacement -->
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
-    style="top:-40px;left:-40px;right:-40px;height:336px;display:flex;align-items:flex-end;transform:scaleY(-1);z-index:1;filter:url(#water-ripple);">
-    {Array.from({length: 20}).map((_, i) => {
-      const pos = i / 19;
-      const dist = Math.abs(pos - 0.5) * 2;
-      const h = 30 + 70 * Math.pow(dist, 1.3);
-      const delay = (i * 0.08).toFixed(2);
-      return (
-        <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;`}></div>
-      );
-    })}
+    style="top:-15px;height:271px;z-index:1;overflow:hidden;">
+    <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);filter:url(#water-ripple);">
+      {Array.from({length: 20}).map((_, i) => {
+        const pos = i / 19;
+        const dist = Math.abs(pos - 0.5) * 2;
+        const h = 30 + 70 * Math.pow(dist, 1.3);
+        const delay = (i * 0.08).toFixed(2);
+        return (
+          <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;`}></div>
+        );
+      })}
+    </div>
   </div>
+
 
   <div class="sl-container" style="position:relative;z-index:3;">
 
@@ -530,6 +534,21 @@
   .sl-phone-frame {
     width: 270px;
   }
+
+  /* ── Edge bleed for displacement filter — provides pixels at edges ── */
+  .sl-mirror-bars::before,
+  .sl-mirror-bars::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    background: linear-gradient(to top, #9147ff, transparent);
+    opacity: 0.35;
+    animation: pulseBar 2s ease-in-out infinite alternate;
+  }
+  .sl-mirror-bars::before { left: -30px; animation-delay: 0s; }
+  .sl-mirror-bars::after { right: -30px; animation-delay: 1.52s; }
 
   /* ── Scrollbar hide ── */
   #sl-screens * {
