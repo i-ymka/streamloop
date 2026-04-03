@@ -1,0 +1,564 @@
+---
+// HowItWorksPreview — merged HowItWorks + AppPreview
+// Design: Dark OLED + Purple, Plus Jakarta Sans, 8px grid
+// Pattern: App Store Style — interactive steps control phone screens
+---
+
+<section id="how-it-works" class="sl-section" style="position:relative;overflow:visible;">
+
+  <!-- CSS glow behind canvas — matches Hero's radial glow at meeting point -->
+  <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
+    style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
+
+  <!-- Mirror bars: exact copy of Hero bars, flipped vertically + horizontally -->
+  <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
+    style="top:0;height:256px;display:flex;align-items:flex-end;transform:scaleY(-1);z-index:1;">
+    {Array.from({length: 20}).map((_, i) => {
+      const pos = i / 19;
+      const dist = Math.abs(pos - 0.5) * 2;
+      const h = 30 + 70 * Math.pow(dist, 1.3);
+      const delay = (i * 0.08).toFixed(2);
+      return (
+        <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;`}></div>
+      );
+    })}
+  </div>
+
+  <div class="sl-container" style="position:relative;z-index:2;">
+
+    <!-- Header -->
+    <div class="sl-header">
+      <p class="sl-label">The Loop</p>
+      <h2 class="sl-title">Four steps. Every week. Forever.</h2>
+      <p class="sl-subtitle">No courses. No fluff. One challenge, one stream, one honest verdict — then repeat.</p>
+    </div>
+
+    <!-- Body: steps + phone -->
+    <div class="sl-body">
+
+      <!-- Steps (left on desktop, top on mobile) -->
+      <div class="sl-steps">
+
+        <button class="sl-step sl-step--active" data-screen="0">
+          <div class="sl-step__num">01</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+              </svg>
+              <h3 class="sl-step__title">Get your weekly challenge</h3>
+            </div>
+            <p class="sl-step__desc">One mission, picked for your exact level. Not a list of tips — a single thing to focus on this stream.</p>
+            <ul class="sl-step__bullets">
+              <li>Personalised to where you actually are</li>
+              <li>Based on your weak spots, not generic advice</li>
+              <li>Takes 5 seconds to read, one stream to do</li>
+            </ul>
+          </div>
+        </button>
+
+        <button class="sl-step" data-screen="1">
+          <div class="sl-step__num">02</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+              </svg>
+              <h3 class="sl-step__title">Go live and stream</h3>
+            </div>
+            <p class="sl-step__desc">Do your thing. StreamLoop doesn't interrupt — it just waits. No plugins, no API keys, no setup.</p>
+            <ul class="sl-step__bullets">
+              <li>Twitch, YouTube, Kick, TikTok — any platform</li>
+              <li>Stream exactly how you always do</li>
+              <li>Zero overhead, zero interruptions</li>
+            </ul>
+          </div>
+        </button>
+
+        <button class="sl-step" data-screen="2">
+          <div class="sl-step__num">03</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+              </svg>
+              <h3 class="sl-step__title">Upload your analytics</h3>
+            </div>
+            <p class="sl-step__desc">Screenshot your stats page. Drop it in. The AI reads the numbers — you don't have to type anything.</p>
+            <ul class="sl-step__bullets">
+              <li>Just a screenshot — no API, no OAuth</li>
+              <li>Works with any platform's analytics page</li>
+              <li>Done in under 30 seconds</li>
+            </ul>
+          </div>
+        </button>
+
+        <button class="sl-step" data-screen="3">
+          <div class="sl-step__num">04</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <h3 class="sl-step__title">See exactly what to fix</h3>
+            </div>
+            <p class="sl-step__desc">Not "stream more consistently." The AI tells you what broke this stream, what worked, and what the next challenge is.</p>
+            <ul class="sl-step__bullets">
+              <li>Specific to your numbers, not generic tips</li>
+              <li>See your level progress and streak</li>
+              <li>Next challenge unlocks automatically</li>
+            </ul>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- Phone mockup (right on desktop, bottom on mobile) -->
+      <div class="sl-phone-wrap">
+        <div class="sl-phone-frame">
+          <iphone-16-max mode="dark">
+            <div id="sl-screens" style="width:100%;height:100%;position:relative;overflow:hidden;background:#080614;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;">
+
+              <!-- ── Screen 0: Home ── -->
+              <div class="sl-screen" data-screen="0" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#080614;">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div>
+                      <h2 style="font-size:20px;font-weight:700;color:#F1F5F9;margin:0;">Hey, Marcus 👋</h2>
+                      <p style="font-size:11px;color:#64748B;margin:3px 0 0;">Week 4 of your journey</p>
+                    </div>
+                    <div style="width:32px;height:32px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <span style="font-size:13px;font-weight:700;color:white;">M</span>
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <div style="background:#1C1208;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;">
+                      <span style="font-size:18px;">🔥</span>
+                      <p style="font-size:22px;font-weight:800;color:#F1F5F9;margin:0;line-height:1;">4</p>
+                      <p style="font-size:9px;font-weight:600;letter-spacing:1px;color:#64748B;margin:0;">WEEK STREAK</p>
+                    </div>
+                    <div style="background:#130E28;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;">
+                      <span style="font-size:18px;">⚡</span>
+                      <p style="font-size:16px;font-weight:800;color:#F1F5F9;margin:0;line-height:1.1;">Lvl 2</p>
+                      <p style="font-size:9px;font-weight:600;letter-spacing:1px;color:#64748B;margin:0;">SOMEONE'S WATCHING</p>
+                    </div>
+                  </div>
+                  <div style="background:#141028;border-radius:12px;padding:12px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                      <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">LEVEL PROGRESS</p>
+                      <p style="font-size:9px;font-weight:700;color:#7C3AED;margin:0;">62%</p>
+                    </div>
+                    <div style="height:4px;background:#2A2040;border-radius:2px;overflow:hidden;">
+                      <div style="width:62%;height:100%;background:#7C3AED;border-radius:2px;"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:5px;">
+                      <p style="font-size:10px;color:#A78BFA;margin:0;">Someone's watching</p>
+                      <p style="font-size:10px;color:#4A4468;margin:0;">Small circle →</p>
+                    </div>
+                  </div>
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">THIS WEEK'S CHALLENGE</p>
+                  <div style="background:#141028;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                      <span style="background:#7C3AED;color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;">ACTIVE</span>
+                      <span style="font-size:10px;color:#64748B;">WEEK 4</span>
+                    </div>
+                    <p style="font-size:13px;font-weight:700;color:#F1F5F9;line-height:1.35;margin:0;">Go live for 60 minutes without checking your viewer count</p>
+                    <p style="font-size:11px;color:#94A3B8;line-height:1.5;margin:0;">Anxiety-checking your numbers mid-stream tanks your energy. Your audience can feel it.</p>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                      <span style="font-size:10px;color:#64748B;">⏱ Ends Sunday</span>
+                      <span style="font-size:10px;font-weight:700;color:#F59E0B;">+150 XP</span>
+                    </div>
+                    <div style="background:#7C3AED;border-radius:8px;padding:10px;text-align:center;">
+                      <span style="font-size:12px;font-weight:700;color:white;">Mark as Complete</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="flex-shrink:0;height:54px;background:#06040F;border-top:1px solid #2A2040;display:flex;align-items:center;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span style="font-size:9px;color:#7C3AED;font-weight:600;">Home</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span style="font-size:9px;color:#4A4A6A;">Upload</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span style="font-size:9px;color:#4A4A6A;">Analysis</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span style="font-size:9px;color:#4A4A6A;">Progress</span></div>
+                </div>
+              </div>
+
+              <!-- ── Screen 1: Upload ── -->
+              <div class="sl-screen" data-screen="1" style="position:absolute;inset:0;display:none;flex-direction:column;background:#080614;">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="color:#94A3B8;font-size:16px;font-weight:700;">←</span>
+                    <p style="font-size:15px;font-weight:700;color:#F1F5F9;margin:0;">Submit Stream Recap</p>
+                  </div>
+                  <div style="display:flex;align-items:center;">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;"><div style="width:22px;height:22px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;font-weight:700;color:white;">1</span></div><span style="font-size:9px;color:#94A3B8;">Platform</span></div>
+                    <div style="flex:1;height:1px;background:#7C3AED;margin-bottom:14px;"></div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;"><div style="width:22px;height:22px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;font-weight:700;color:white;">2</span></div><span style="font-size:9px;color:#94A3B8;">Upload</span></div>
+                    <div style="flex:1;height:1px;background:#2A2040;margin-bottom:14px;"></div>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;"><div style="width:22px;height:22px;border-radius:50%;background:#2A2040;display:flex;align-items:center;justify-content:center;"><span style="font-size:10px;font-weight:700;color:#64748B;">3</span></div><span style="font-size:9px;color:#64748B;">Analyze</span></div>
+                  </div>
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">WHERE DID YOU STREAM?</p>
+                  <div style="display:flex;gap:7px;">
+                    <span style="background:rgba(124,58,237,0.2);border:1.5px solid #7C3AED;color:#A78BFA;font-size:11px;font-weight:600;padding:5px 11px;border-radius:20px;">● Twitch</span>
+                    <span style="background:#141028;border:1px solid #2A2040;color:#64748B;font-size:11px;padding:5px 11px;border-radius:20px;">● YouTube</span>
+                    <span style="background:#141028;border:1px solid #2A2040;color:#64748B;font-size:11px;padding:5px 11px;border-radius:20px;">● TikTok</span>
+                  </div>
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">ANALYTICS SCREENSHOT</p>
+                  <div style="border:1.5px dashed #2A2040;border-radius:12px;padding:24px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;background:#100D1C;">
+                    <svg width="28" height="28" fill="none" stroke="#4A4A6A" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <p style="font-size:12px;font-weight:600;color:#94A3B8;margin:0;">Drop your screenshot here</p>
+                    <p style="font-size:10px;color:#4A4A6A;margin:0;">or tap to browse from Photos</p>
+                    <p style="font-size:9px;color:#4A4A6A;margin:0;">PNG, JPG · Max 10MB</p>
+                  </div>
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">WHAT TO SCREENSHOT</p>
+                  <div style="background:#141028;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:7px;">
+                    <p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">📊 Channel analytics summary (peak viewers, avg viewers, hours)</p>
+                    <p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">👥 Follower/subscriber growth chart for the session</p>
+                    <p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">💬 Chat activity or engagement metrics</p>
+                  </div>
+                  <div style="background:#141028;border:1px solid #2A2040;border-radius:10px;padding:11px;text-align:center;">
+                    <span style="font-size:12px;font-weight:700;color:#4A4A6A;">Upload a screenshot first</span>
+                  </div>
+                </div>
+                <div style="flex-shrink:0;height:54px;background:#06040F;border-top:1px solid #2A2040;display:flex;align-items:center;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span style="font-size:9px;color:#4A4A6A;">Home</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span style="font-size:9px;color:#7C3AED;font-weight:600;">Upload</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span style="font-size:9px;color:#4A4A6A;">Analysis</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span style="font-size:9px;color:#4A4A6A;">Progress</span></div>
+                </div>
+              </div>
+
+              <!-- ── Screen 2: Analysis ── -->
+              <div class="sl-screen" data-screen="2" style="position:absolute;inset:0;display:none;flex-direction:column;background:#080614;">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="color:#94A3B8;font-size:16px;font-weight:700;">←</span>
+                    <p style="font-size:15px;font-weight:700;color:#F1F5F9;margin:0;">Stream Analysis</p>
+                  </div>
+                  <p style="font-size:10px;color:#64748B;margin:0;letter-spacing:0.5px;">WEEK 3 · TWITCH · NOV 12</p>
+                  <h3 style="font-size:14px;font-weight:700;color:#F1F5F9;margin:0;line-height:1.3;">Playing Hollow Knight — First Playthrough</h3>
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+                    <div style="background:#141028;border-radius:8px;padding:8px 4px;text-align:center;"><p style="font-size:16px;font-weight:700;color:#F1F5F9;margin:0;">8</p><p style="font-size:8px;color:#64748B;margin:2px 0 0;line-height:1.2;">peak viewers</p></div>
+                    <div style="background:#141028;border-radius:8px;padding:8px 4px;text-align:center;"><p style="font-size:16px;font-weight:700;color:#F1F5F9;margin:0;">3.2</p><p style="font-size:8px;color:#64748B;margin:2px 0 0;line-height:1.2;">avg viewers</p></div>
+                    <div style="background:#141028;border-radius:8px;padding:8px 4px;text-align:center;"><p style="font-size:14px;font-weight:700;color:#F1F5F9;margin:0;">1h47</p><p style="font-size:8px;color:#64748B;margin:2px 0 0;line-height:1.2;">duration</p></div>
+                    <div style="background:#141028;border-radius:8px;padding:8px 4px;text-align:center;"><p style="font-size:16px;font-weight:700;color:#F1F5F9;margin:0;">+2</p><p style="font-size:8px;color:#64748B;margin:2px 0 0;line-height:1.2;">followers</p></div>
+                  </div>
+                  <div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:10px 12px;">
+                    <p style="font-size:10px;font-weight:700;color:#22C55E;margin:0 0 4px;">CHALLENGE COMPLETE ✓</p>
+                    <p style="font-size:10px;color:#86EFAC;margin:0;line-height:1.5;">You streamed for 71 minutes without checking. You nailed it.</p>
+                    <p style="font-size:10px;font-weight:700;color:#22C55E;margin:4px 0 0;">+150 XP earned</p>
+                  </div>
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#22C55E;margin:0;">✓ WHAT WENT WELL</p>
+                  <div style="display:flex;flex-direction:column;gap:6px;">
+                    <div style="background:#141028;border-radius:8px;padding:9px 11px;"><p style="font-size:11px;font-weight:600;color:#F1F5F9;margin:0 0 3px;">You held your audience</p><p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">Average viewer retention was 40% — solid for your stage.</p></div>
+                    <div style="background:#141028;border-radius:8px;padding:9px 11px;"><p style="font-size:11px;font-weight:600;color:#F1F5F9;margin:0 0 3px;">Natural reactions</p><p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">Peak moment (8 viewers) came during the boss fight.</p></div>
+                  </div>
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#F97316;margin:0;">⚠ WHAT TO WORK ON</p>
+                  <div style="display:flex;flex-direction:column;gap:6px;">
+                    <div style="background:#141028;border-radius:8px;padding:9px 11px;"><p style="font-size:11px;font-weight:600;color:#F1F5F9;margin:0 0 3px;">Dead air at the start</p><p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">You lost 2 viewers in the first 8 minutes — talk constantly during loading.</p></div>
+                  </div>
+                  <div style="background:#141028;border:1px solid #2A2040;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                    <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">YOUR NEXT CHALLENGE</p>
+                    <p style="font-size:12px;font-weight:700;color:#F1F5F9;margin:0;line-height:1.35;">Go live for 60 minutes without checking your viewer count</p>
+                    <div style="background:#7C3AED;border-radius:8px;padding:10px;text-align:center;"><span style="font-size:12px;font-weight:700;color:white;">Accept Challenge →</span></div>
+                  </div>
+                </div>
+                <div style="flex-shrink:0;height:54px;background:#06040F;border-top:1px solid #2A2040;display:flex;align-items:center;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span style="font-size:9px;color:#4A4A6A;">Home</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span style="font-size:9px;color:#4A4A6A;">Upload</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span style="font-size:9px;color:#7C3AED;font-weight:600;">Analysis</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span style="font-size:9px;color:#4A4A6A;">Progress</span></div>
+                </div>
+              </div>
+
+              <!-- ── Screen 3: Progress ── -->
+              <div class="sl-screen" data-screen="3" style="position:absolute;inset:0;display:none;flex-direction:column;background:#080614;">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div><h2 style="font-size:20px;font-weight:700;color:#F1F5F9;margin:0;">Your journey</h2><p style="font-size:11px;color:#64748B;margin:3px 0 0;">Week 4 of streaming</p></div>
+                    <div style="background:#141028;border:1px solid #2A2040;border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:5px;"><span style="font-size:11px;">⚡</span><span style="font-size:11px;font-weight:700;color:#F59E0B;">310 XP</span></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;"><div style="width:3px;height:36px;background:#7C3AED;border-radius:2px;flex-shrink:0;"></div><div><p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#7C3AED;margin:0;">EARLY GAME</p><p style="font-size:10px;color:#64748B;margin:0;">Finding your footing</p></div></div>
+                  <div style="background:#141028;border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:12px;color:white;font-weight:700;">✓</span></div>
+                    <div style="flex:1;"><div style="display:flex;justify-content:space-between;"><p style="font-size:10px;font-weight:600;color:#94A3B8;margin:0;">LEVEL 1</p><p style="font-size:9px;color:#4A4A6A;margin:0;">Weeks 1–2</p></div><p style="font-size:12px;font-weight:700;color:#94A3B8;margin:2px 0 0;">Streaming into the void</p></div>
+                  </div>
+                  <div style="background:#141028;border:1.5px solid #7C3AED;border-radius:10px;padding:11px 13px;display:flex;align-items:flex-start;gap:10px;">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><span style="font-size:12px;color:white;">▶</span></div>
+                    <div style="flex:1;"><div style="display:flex;justify-content:space-between;"><p style="font-size:10px;font-weight:600;color:#A78BFA;margin:0;">LEVEL 2</p><p style="font-size:9px;color:#64748B;margin:0;">Weeks 3–6</p></div><p style="font-size:12px;font-weight:700;color:#F1F5F9;margin:2px 0 4px;">Someone's watching</p><div style="height:4px;background:#2A2040;border-radius:2px;overflow:hidden;"><div style="width:62%;height:100%;background:#7C3AED;border-radius:2px;"></div></div><p style="font-size:9px;font-weight:700;color:#7C3AED;margin:3px 0 0;text-align:right;">62%</p></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px;"><div style="width:3px;height:36px;background:#3B82F6;border-radius:2px;flex-shrink:0;"></div><div><p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#3B82F6;margin:0;">MID GAME</p><p style="font-size:10px;color:#64748B;margin:0;">Building momentum</p></div></div>
+                  <div style="background:#100D1C;border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:10px;opacity:0.5;"><div style="width:28px;height:28px;border-radius:50%;background:#141028;border:1px solid #2A2040;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:12px;">🔒</span></div><div><p style="font-size:10px;font-weight:600;color:#4A4A6A;margin:0;">LEVEL 3 · Weeks 7–12</p><p style="font-size:12px;font-weight:700;color:#4A4A6A;margin:2px 0 0;">Small circle</p></div></div>
+                  <div style="background:#141028;border-radius:10px;padding:12px;display:flex;gap:10px;align-items:flex-start;"><span style="font-size:18px;flex-shrink:0;">🎯</span><div><p style="font-size:11px;font-weight:700;color:#F1F5F9;margin:0 0 4px;">38% of streamers quit in week 3.</p><p style="font-size:10px;color:#94A3B8;margin:0;line-height:1.4;">You're still here. That's how this works.</p></div></div>
+                </div>
+                <div style="flex-shrink:0;height:54px;background:#06040F;border-top:1px solid #2A2040;display:flex;align-items:center;">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg><span style="font-size:9px;color:#4A4A6A;">Home</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><span style="font-size:9px;color:#4A4A6A;">Upload</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#4A4A6A" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg><span style="font-size:9px;color:#4A4A6A;">Analysis</span></div>
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><svg width="16" height="16" fill="none" stroke="#7C3AED" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg><span style="font-size:9px;color:#7C3AED;font-weight:600;">Progress</span></div>
+                </div>
+              </div>
+
+            </div>
+          </iphone-16-max>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script type="module" src="https://unpkg.com/@sneas/telephone/index.js"></script>
+
+<style>
+  /* ── Design tokens ── */
+  :root {
+    --sl-bg: hsl(258 60% 5%);
+    --sl-surface: hsl(258 40% 11%);
+    --sl-border: hsl(258 35% 18%);
+    --sl-purple: hsl(263 69% 56%);
+    --sl-purple-dim: hsl(263 69% 56% / 0.12);
+    --sl-text: hsl(213 31% 95%);
+    --sl-muted: hsl(220 10% 68%);
+    --sl-label: hsl(220 10% 43%);
+  }
+
+  /* ── Layout ── */
+  .sl-section {
+    position: relative;
+    padding: 96px 24px;
+    background: transparent;
+    overflow: visible;
+  }
+  .sl-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .sl-header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  .sl-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sl-purple);
+    margin: 0 0 12px;
+  }
+  .sl-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    color: var(--sl-text);
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+  .sl-subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    color: var(--sl-muted);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Body: steps + phone ── */
+  .sl-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 56px;
+  }
+  @media (min-width: 1024px) {
+    .sl-body {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 64px;
+    }
+  }
+
+  /* ── Steps ── */
+  .sl-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    max-width: 520px;
+  }
+  @media (min-width: 1024px) {
+    .sl-steps { flex: 1; }
+  }
+
+  .sl-step {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid hsl(258 35% 16%);
+    background: hsl(258 40% 7%);
+    cursor: pointer;
+    text-align: left;
+    transition: background 200ms ease, border-color 200ms ease;
+    width: 100%;
+  }
+  .sl-step:hover {
+    background: hsl(263 69% 56% / 0.08);
+    border-color: hsl(263 69% 56% / 0.25);
+  }
+  .sl-step--active {
+    background: var(--sl-purple-dim);
+    border-color: hsl(263 69% 56% / 0.4);
+  }
+
+  .sl-step__num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--sl-purple);
+    opacity: 0.45;
+    flex-shrink: 0;
+    padding-top: 2px;
+    min-width: 24px;
+    transition: opacity 200ms ease;
+  }
+  .sl-step--active .sl-step__num { opacity: 1; }
+
+  .sl-step__content { flex: 1; min-width: 0; }
+
+  .sl-step__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .sl-step__icon {
+    width: 18px;
+    height: 18px;
+    color: var(--sl-purple);
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: opacity 200ms ease;
+  }
+  .sl-step--active .sl-step__icon { opacity: 1; }
+
+  .sl-step__title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--sl-text);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .sl-step__desc {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: var(--sl-muted);
+    line-height: 1.6;
+    margin: 0 0 10px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 250ms ease, opacity 250ms ease, margin 250ms ease;
+  }
+  .sl-step--active .sl-step__desc {
+    max-height: 100px;
+    opacity: 1;
+  }
+
+  .sl-step__bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 250ms ease, opacity 250ms ease;
+  }
+  .sl-step--active .sl-step__bullets {
+    max-height: 120px;
+    opacity: 1;
+  }
+  .sl-step__bullets li {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    color: var(--sl-label);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .sl-step__bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--sl-purple);
+    opacity: 0.6;
+  }
+
+  /* ── Phone ── */
+  .sl-phone-wrap {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .sl-phone-frame {
+    width: 270px;
+  }
+
+  /* ── Scrollbar hide ── */
+  #sl-screens * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  #sl-screens *::-webkit-scrollbar { display: none; }
+
+  /* ── Blur bar ── */
+  #sl-screens .sl-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 36px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(8, 6, 20, 0.6);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  (function () {
+    var steps   = document.querySelectorAll('.sl-step');
+    var screens = document.querySelectorAll('#sl-screens .sl-screen');
+
+    function goTo(index) {
+      steps.forEach(function (s, i) {
+        s.classList.toggle('sl-step--active', i === index);
+      });
+      screens.forEach(function (s, i) {
+        s.style.display = i === index ? 'flex' : 'none';
+      });
+    }
+
+    steps.forEach(function (step, i) {
+      step.addEventListener('click', function () { goTo(i); });
+    });
+
+    // Step 1 (index 1) has no phone screen — map it to screen 0
+    steps[1].addEventListener('click', function () { goTo(0); });
+  })();
+</script>
+
+<!-- Plus Jakarta Sans — recommended by ui-ux-pro-max for SaaS/coaching products -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">

@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg: #07050F;
+  --accent: #9147ff;
+  --accent-dim: rgba(145, 71, 255, 0.12);
+  --text: #efeff1;
+  --muted: #adadb8;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes blobDrift1 {
+  0%, 100% { transform: translate(0, 0); }
+  33%       { transform: translate(40px, -50px); }
+  66%       { transform: translate(-30px, 30px); }
+}
+@keyframes blobDrift2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(-60px, -40px); }
+}
+@keyframes blobDrift3 {
+  0%, 100% { transform: translate(0, 0); }
+  40%       { transform: translate(30px, -30px); }
+  80%       { transform: translate(-20px, 20px); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseBar {
+  0%   { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes waveScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.fade-up   { animation: fadeUp 0.7s ease both; }
+.delay-100 { animation-delay: 0.1s; }
+.delay-250 { animation-delay: 0.25s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-550 { animation-delay: 0.55s; }
+
+.marquee-track {
+  display: flex;
+  animation: marquee 20s linear infinite;
+  width: max-content;
+}

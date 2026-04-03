@@ -1,0 +1,140 @@
+---
+// Hero — adapted from 21st.dev "Gradient Bar Hero Section"
+// Source: gradient-bar-hero-section by 21st.dev
+// Changes: purple bars instead of orange, Astro (no React), custom copy, Google Sheets form
+---
+
+<section class="relative min-h-screen flex flex-col items-center justify-center px-6">
+
+  <!-- Gradient bars — original position -->
+  <div class="absolute bottom-0 left-0 right-0 h-64 flex items-end pointer-events-none" aria-hidden="true">
+    {Array.from({length: 20}).map((_, i) => {
+      const pos = i / 19;
+      const dist = Math.abs(pos - 0.5) * 2;
+      const h = 30 + 70 * Math.pow(dist, 1.3);
+      const delay = (i * 0.08).toFixed(2);
+      return (
+        <div
+          style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;`}
+        />
+      );
+    })}
+  </div>
+
+  <!-- Radial glow -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true"
+    style="background:radial-gradient(ellipse 70% 50% at 50% 80%,rgba(145,71,255,0.18) 0%,transparent 70%);">
+  </div>
+
+
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center gap-8">
+
+    <!-- Badge -->
+    <div class="fade-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm"
+      style="background:rgba(145,71,255,0.12);border:1px solid rgba(145,71,255,0.3);color:#c4a4ff;">
+      <span class="w-1.5 h-1.5 rounded-full bg-[#9147ff] inline-block"></span>
+      Early access — join the waitlist
+    </div>
+
+    <!-- Headline -->
+    <h1 class="fade-up delay-100 text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight" style="color:#efeff1;">
+      You stream.<br/>
+      <span style="color:#9147ff;">We improve.</span><br/>
+      Repeat.
+    </h1>
+
+    <!-- Subheadline -->
+    <p class="fade-up delay-250 text-lg sm:text-xl max-w-xl leading-relaxed" style="color:#adadb8;">
+      The feedback loop every streamer needs but no one built. Until now.
+    </p>
+
+    <!-- Form -->
+    <form
+      id="waitlist-form"
+      class="fade-up delay-400 w-full max-w-md flex flex-col sm:flex-row gap-3"
+      novalidate
+    >
+      <input
+        id="email-input"
+        type="email"
+        placeholder="your@email.com"
+        autocomplete="email"
+        required
+        class="flex-1 px-5 py-3.5 rounded-xl text-sm outline-none transition-all"
+        style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#efeff1;caret-color:#9147ff;"
+        onfocus="this.style.borderColor='rgba(145,71,255,0.6)'"
+        onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
+      />
+      <button
+        type="submit"
+        id="submit-btn"
+        class="px-6 py-3.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95 whitespace-nowrap"
+        style="background:#9147ff;color:#fff;"
+      >
+        Join the waitlist
+      </button>
+    </form>
+
+    <!-- Form error/success messages -->
+    <p id="form-error" class="hidden text-sm" style="color:#f87171;">Please enter a valid email.</p>
+    <div id="form-success" class="hidden fade-up rounded-xl px-6 py-4 text-sm text-center"
+      style="background:rgba(145,71,255,0.15);border:1px solid rgba(145,71,255,0.3);color:#c4a4ff;">
+      You're on the list! 💜 Check <a href="#discord" class="underline underline-offset-2">our Discord</a> for the community.
+    </div>
+
+    <!-- Social proof scroll -->
+    <div class="fade-up delay-550 w-full overflow-hidden" style="mask-image:linear-gradient(to right,transparent,black 15%,black 85%,transparent);">
+      <div class="marquee-track gap-8 text-xs" style="color:#6b6b7b;">
+        {['r/Twitch', 'r/streaming', 'r/letsplay', 'r/contentcreators', 'Twitch Creator Camp', 'r/juststart', 'r/Twitch', 'r/streaming', 'r/letsplay', 'r/contentcreators', 'Twitch Creator Camp', 'r/juststart'].map(t => (
+          <span class="flex items-center gap-2 whitespace-nowrap">
+            <span class="w-1 h-1 rounded-full inline-block" style="background:#9147ff;"></span>
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const SCRIPT_URL = 'REPLACE_WITH_GOOGLE_APPS_SCRIPT_URL';
+
+  const form = document.getElementById('waitlist-form') as HTMLFormElement;
+  const input = document.getElementById('email-input') as HTMLInputElement;
+  const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const error = document.getElementById('form-error')!;
+  const success = document.getElementById('form-success')!;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    error.classList.add('hidden');
+
+    const email = input.value.trim();
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      error.classList.remove('hidden');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Joining...';
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      form.classList.add('hidden');
+      success.classList.remove('hidden');
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'Join the waitlist';
+      error.textContent = 'Something went wrong. Try again.';
+      error.classList.remove('hidden');
+    }
+  });
+</script>
