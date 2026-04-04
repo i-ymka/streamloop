@@ -6,22 +6,6 @@
 
 <section id="how-it-works" class="sl-section" style="position:relative;overflow:hidden;">
 
-  <!-- SVG filter: animated water distortion -->
-  <svg class="absolute" style="width:0;height:0;" aria-hidden="true">
-    <filter id="water-ripple" x="-50%" y="-50%" width="200%" height="200%"
-            color-interpolation-filters="sRGB">
-      <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
-        <animate attributeName="baseFrequency"
-          values="0.015 0.044;0.019 0.052;0.015 0.044"
-          dur="16s" repeatCount="indefinite"
-          calcMode="spline"
-          keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-      </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
-        xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </svg>
-
   <!-- CSS glow — matches Hero's radial glow -->
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>

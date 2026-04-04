@@ -25,6 +25,24 @@ import Footer from '../components/Footer.astro';
   </head>
   <body class="min-h-screen overflow-x-hidden">
 
+    <!-- SVG filter definitions — global scope for iOS WebKit compatibility -->
+    <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;">
+      <defs>
+        <filter id="water-ripple" x="-50%" y="-50%" width="200%" height="200%"
+                color-interpolation-filters="sRGB">
+          <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
+            <animate attributeName="baseFrequency"
+              values="0.015 0.044;0.019 0.052;0.015 0.044"
+              dur="16s" repeatCount="indefinite"
+              calcMode="spline"
+              keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
+            xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+    </svg>
+
     <!-- Global ambient canvas — spans entire page, pointer-events:none -->
     <div aria-hidden="true" style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;">
       <!-- Blob 1: top-center, Hero area -->
