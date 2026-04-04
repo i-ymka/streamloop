@@ -42,27 +42,18 @@
         })}
       </div>
     </div>
-    <!-- iOS: inline SVG with native filter (CSS filter:url on HTML broken on iOS - WebKit bug) -->
-    <!-- v2: added feGaussianBlur before displacement to fix squiggly bars -->
-    <!-- new filter ID sl-svg-ripple-v2 to bust iOS compiled shader cache -->
+    <!-- iOS: JS sine-wave animation on bar x-positions (no SVG filter — iOS caches GPU shaders) -->
     <svg id="sl-bars-ios" xmlns="http://www.w3.org/2000/svg"
       width="100%" height="271"
-      style="display:none;position:absolute;top:0;left:0;"
+      style="display:none;position:absolute;top:0;left:0;overflow:visible;"
       aria-hidden="true">
       <defs>
         <linearGradient id="sl-bar-grad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#9147ff" stop-opacity="0.35"/>
           <stop offset="100%" stop-color="#9147ff" stop-opacity="0"/>
         </linearGradient>
-        <filter id="sl-svg-ripple-v2" x="-20%" y="-20%" width="140%" height="140%"
-                color-interpolation-filters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.02 0.006" numOctaves="2" result="rawNoise"/>
-          <feGaussianBlur in="rawNoise" stdDeviation="3" result="smoothNoise"/>
-          <feDisplacementMap in="SourceGraphic" in2="smoothNoise" scale="12"
-            xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
       </defs>
-      <g filter="url(#sl-svg-ripple-v2)">
+      <g id="sl-ios-bars">
         {Array.from({length: 20}).map((_, i) => {
           const pos  = i / 19;
           const dist = Math.abs(pos - 0.5) * 2;
@@ -70,8 +61,8 @@
           const x    = (i / 20 * 100).toFixed(2);
           const delay = (i * 0.08).toFixed(2);
           return (
-            <rect x={`${x}%`} y="0" width="5.5%" height={h} fill="url(#sl-bar-grad)">
-              <animate attributeName="opacity" values="0.5;1;0.5"
+            <rect data-base-x={x} x={`${x}%`} y="0" width="5.5%" height={h} fill="url(#sl-bar-grad)">
+              <animate attributeName="opacity" values="0.35;0.6;0.35"
                 dur="2s" begin={`${delay}s`} repeatCount="indefinite"
                 calcMode="spline" keySplines="0.4 0 0.6 1"/>
             </rect>
@@ -646,15 +637,33 @@
 </style>
 
 <script>
-  // iOS: switch to inline SVG water (CSS filter:url on HTML broken - WebKit bug #261806)
+  // iOS: switch to SVG bars + JS sine-wave animation (CSS filter:url on HTML broken - WebKit bug #261806)
+  // SVG filter also broken: iOS caches compiled GPU shader, parameter changes ignored
+  // Solution: animate bar x-positions with JS sine wave — no filter needed
   (function () {
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (!isIOS) return;
+
     var html = document.getElementById('sl-bars-html');
     var ios  = document.getElementById('sl-bars-ios');
     if (html) html.style.display = 'none';
-    if (ios)  ios.style.display  = 'block';
+    if (!ios) return;
+    ios.style.display = 'block';
+
+    var bars = Array.from(ios.querySelectorAll('rect'));
+    var baseX = bars.map(function(r) { return parseFloat(r.getAttribute('data-base-x')); });
+
+    function tick(ts) {
+      var t = ts / 1000;
+      bars.forEach(function(bar, i) {
+        // sine wave across bars: each bar offset in phase, amplitude ±1.8%
+        var wave = Math.sin(t * 0.6 + i * 0.45) * 1.8;
+        bar.setAttribute('x', (baseX[i] + wave) + '%');
+      });
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   })();
 </script>
 
