@@ -29,7 +29,7 @@
   <!-- Mirror bars with edge bleed for displacement -->
   <div id="sl-bars-wrap" class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:-15px;height:271px;z-index:1;overflow:hidden;">
-    <div style="position:relative;width:100%;height:100%;filter:url(#water-ripple);">
+    <div id="sl-bars-html" style="position:relative;width:100%;height:100%;filter:url(#water-ripple);">
       <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);">
         {Array.from({length: 20}).map((_, i) => {
           const pos = i / 19;
@@ -42,6 +42,43 @@
         })}
       </div>
     </div>
+    <!-- iOS: inline SVG with native filter (CSS filter:url on HTML broken on iOS - WebKit bug) -->
+    <!-- v2: added feGaussianBlur before displacement to fix squiggly bars -->
+    <!-- new filter ID sl-svg-ripple-v2 to bust iOS compiled shader cache -->
+    <svg id="sl-bars-ios" xmlns="http://www.w3.org/2000/svg"
+      width="100%" height="271"
+      style="display:none;position:absolute;top:0;left:0;"
+      aria-hidden="true">
+      <defs>
+        <linearGradient id="sl-bar-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#9147ff" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#9147ff" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="sl-svg-ripple-v2" x="-20%" y="-20%" width="140%" height="140%"
+                color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.02 0.006" numOctaves="2" result="rawNoise"/>
+          <feGaussianBlur in="rawNoise" stdDeviation="3" result="smoothNoise"/>
+          <feDisplacementMap in="SourceGraphic" in2="smoothNoise" scale="12"
+            xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <g filter="url(#sl-svg-ripple-v2)">
+        {Array.from({length: 20}).map((_, i) => {
+          const pos  = i / 19;
+          const dist = Math.abs(pos - 0.5) * 2;
+          const h    = ((30 + 70 * Math.pow(dist, 1.3)) / 100 * 271).toFixed(1);
+          const x    = (i / 20 * 100).toFixed(2);
+          const delay = (i * 0.08).toFixed(2);
+          return (
+            <rect x={`${x}%`} y="0" width="5.5%" height={h} fill="url(#sl-bar-grad)">
+              <animate attributeName="opacity" values="0.5;1;0.5"
+                dur="2s" begin={`${delay}s`} repeatCount="indefinite"
+                calcMode="spline" keySplines="0.4 0 0.6 1"/>
+            </rect>
+          );
+        })}
+      </g>
+    </svg>
   </div>
 
 
@@ -607,6 +644,19 @@
     pointer-events: none;
   }
 </style>
+
+<script>
+  // iOS: switch to inline SVG water (CSS filter:url on HTML broken - WebKit bug #261806)
+  (function () {
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (!isIOS) return;
+    var html = document.getElementById('sl-bars-html');
+    var ios  = document.getElementById('sl-bars-ios');
+    if (html) html.style.display = 'none';
+    if (ios)  ios.style.display  = 'block';
+  })();
+</script>
 
 <script>
   (function () {
