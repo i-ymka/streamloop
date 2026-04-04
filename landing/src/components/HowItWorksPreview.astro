@@ -47,9 +47,9 @@
 
     <!-- Header -->
     <div class="sl-header">
-      <p class="sl-label">The Loop</p>
-      <h2 class="sl-title">Four steps. Every stream. Forever.</h2>
-      <p class="sl-subtitle">No courses. No fluff. One challenge, one stream, one honest verdict — then repeat.</p>
+      <p class="sl-label" id="sl-label">The Loop</p>
+      <h2 class="sl-title" id="sl-title">Four steps. Every stream. Forever.</h2>
+      <p class="sl-subtitle" id="sl-subtitle">No courses. No fluff. One challenge, one stream, one honest verdict — then repeat.</p>
     </div>
 
     <!-- Body: steps + phone -->
@@ -140,7 +140,7 @@
 
               <!-- ── Screen 0: Home ── -->
               <div class="sl-screen" data-screen="0" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#080614;">
-                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:5px;">
                   <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                     <div>
                       <h2 style="font-size:20px;font-weight:700;color:#F1F5F9;margin:0;">Hey, Marcus 👋</h2>
@@ -162,32 +162,32 @@
                       <p style="font-size:9px;font-weight:600;letter-spacing:1px;color:#64748B;margin:0;">SOMEONE'S WATCHING</p>
                     </div>
                   </div>
-                  <div style="background:#141028;border-radius:12px;padding:12px;">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                  <div style="background:#141028;border-radius:12px;padding:10px 12px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
                       <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">LEVEL PROGRESS</p>
                       <p style="font-size:9px;font-weight:700;color:#7C3AED;margin:0;">62%</p>
                     </div>
                     <div style="height:4px;background:#2A2040;border-radius:2px;overflow:hidden;">
                       <div style="width:62%;height:100%;background:#7C3AED;border-radius:2px;"></div>
                     </div>
-                    <div style="display:flex;justify-content:space-between;margin-top:5px;">
+                    <div style="display:flex;justify-content:space-between;margin-top:4px;">
                       <p style="font-size:10px;color:#A78BFA;margin:0;">Someone's watching</p>
                       <p style="font-size:10px;color:#4A4468;margin:0;">Small circle →</p>
                     </div>
                   </div>
                   <p style="font-size:9px;font-weight:700;letter-spacing:1px;color:#64748B;margin:0;">YOUR CHALLENGE</p>
-                  <div style="background:#141028;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                  <div style="background:#141028;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                       <span style="background:#7C3AED;color:white;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;">ACTIVE</span>
                       <span style="font-size:10px;color:#64748B;">STREAM #12</span>
                     </div>
                     <p style="font-size:13px;font-weight:700;color:#F1F5F9;line-height:1.35;margin:0;">Go live for 60 minutes without checking your viewer count</p>
-                    <p style="font-size:11px;color:#94A3B8;line-height:1.5;margin:0;">Anxiety-checking your numbers mid-stream tanks your energy. Your audience can feel it.</p>
+                    <p style="font-size:11px;color:#94A3B8;line-height:1.4;margin:0;">Anxiety-checking your numbers mid-stream tanks your energy. Your audience can feel it.</p>
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                       <span style="font-size:10px;color:#64748B;">⏱ Ends Sunday</span>
                       <span style="font-size:10px;font-weight:700;color:#F59E0B;">+150 XP</span>
                     </div>
-                    <div style="background:#7C3AED;border-radius:8px;padding:10px;text-align:center;">
+                    <div style="background:#7C3AED;border-radius:8px;padding:8px;text-align:center;">
                       <span style="font-size:12px;font-weight:700;color:white;">Mark as Complete</span>
                     </div>
                   </div>
@@ -331,9 +331,12 @@
   /* ── Layout ── */
   .sl-section {
     position: relative;
-    padding: 96px 24px;
+    padding: 64px 20px;
     background: transparent;
     overflow: visible;
+  }
+  @media (min-width: 768px) {
+    .sl-section { padding: 96px 24px; }
   }
   .sl-container {
     max-width: 1100px;
@@ -343,7 +346,10 @@
   /* ── Header ── */
   .sl-header {
     text-align: center;
-    margin-bottom: 64px;
+    margin-bottom: 40px;
+  }
+  @media (min-width: 768px) {
+    .sl-header { margin-bottom: 64px; }
   }
   .sl-label {
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -374,9 +380,9 @@
   /* ── Body: steps + phone ── */
   .sl-body {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
-    gap: 56px;
+    gap: 32px;
   }
   @media (min-width: 1024px) {
     .sl-body {
@@ -388,27 +394,31 @@
 
   /* ── Steps ── */
   .sl-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    max-width: 520px;
+    display: none;
   }
   @media (min-width: 1024px) {
-    .sl-steps { flex: 1; }
+    .sl-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
   }
 
   .sl-step {
     display: flex;
     gap: 20px;
-    padding: 20px;
-    border-radius: 16px;
+    padding: 14px;
+    border-radius: 12px;
     border: 1px solid hsl(258 35% 16%);
     background: hsl(258 40% 7%);
     cursor: pointer;
     text-align: left;
     transition: background 200ms ease, border-color 200ms ease;
     width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .sl-step { padding: 20px; border-radius: 16px; }
   }
   .sl-step:hover {
     background: hsl(263 69% 56% / 0.08);
@@ -438,8 +448,11 @@
   .sl-step__header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-bottom: 0;
+  }
+  @media (min-width: 1024px) {
+    .sl-step__header { gap: 10px; margin-bottom: 8px; }
   }
   .sl-step__icon {
     width: 18px;
@@ -453,44 +466,58 @@
 
   .sl-step__title {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--sl-text);
     margin: 0;
     line-height: 1.3;
   }
+  @media (min-width: 1024px) {
+    .sl-step__title { font-size: 15px; }
+  }
 
   .sl-step__desc {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
-    color: var(--sl-muted);
-    line-height: 1.6;
-    margin: 0 0 10px;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 250ms ease, opacity 250ms ease, margin 250ms ease;
+    display: none;
   }
-  .sl-step--active .sl-step__desc {
-    max-height: 100px;
-    opacity: 1;
+  @media (min-width: 1024px) {
+    .sl-step__desc {
+      display: block;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      color: var(--sl-muted);
+      line-height: 1.6;
+      margin: 0 0 10px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 250ms ease, opacity 250ms ease, margin 250ms ease;
+    }
+    .sl-step--active .sl-step__desc {
+      max-height: 160px;
+      opacity: 1;
+    }
   }
 
   .sl-step__bullets {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 250ms ease, opacity 250ms ease;
+    display: none;
   }
-  .sl-step--active .sl-step__bullets {
-    max-height: 120px;
-    opacity: 1;
+  @media (min-width: 1024px) {
+    .sl-step__bullets {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 250ms ease, opacity 250ms ease;
+    }
+    .sl-step--active .sl-step__bullets {
+      max-height: 120px;
+      opacity: 1;
+    }
   }
   .sl-step__bullets li {
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -578,6 +605,18 @@
     var navItems = document.querySelectorAll('#sl-screens .sl-nav-item');
     var current = 0;
 
+    var stepData = [
+      { label: '01 / 04', title: 'Get your challenge', subtitle: 'One mission, picked for your exact level. Not a list of tips — a single thing to focus on this stream.' },
+      { label: '02 / 04', title: 'Stream & upload', subtitle: 'Go live, do your thing, then screenshot your stats. The AI reads the numbers — you don\'t type anything.' },
+      { label: '03 / 04', title: 'See what worked', subtitle: 'Not "stream more consistently." The AI tells you what broke this stream, what worked, and what\'s next.' },
+      { label: '04 / 04', title: 'Track your journey', subtitle: 'See where you started, where you are, and what\'s ahead. Levels, streaks, XP — your whole arc in one place.' },
+    ];
+    var isMobile = function() { return window.innerWidth < 1024; };
+
+    var elLabel    = document.getElementById('sl-label');
+    var elTitle    = document.getElementById('sl-title');
+    var elSubtitle = document.getElementById('sl-subtitle');
+
     function goTo(index) {
       if (index === current && screens[index].style.display === 'flex') return;
       current = index;
@@ -586,6 +625,13 @@
       steps.forEach(function (s, i) {
         s.classList.toggle('sl-step--active', i === index);
       });
+
+      // Update header on mobile
+      if (isMobile() && stepData[index]) {
+        elLabel.textContent    = stepData[index].label;
+        elTitle.textContent    = stepData[index].title;
+        elSubtitle.textContent = stepData[index].subtitle;
+      }
 
       // Update nav highlights in ALL nav bars (4 items per bar × 4 screens)
       navItems.forEach(function (nav) {

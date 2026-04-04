@@ -4,7 +4,7 @@
 // Changes: purple bars instead of orange, Astro (no React), custom copy, Google Sheets form
 ---
 
-<section class="relative min-h-screen flex flex-col items-center justify-center px-6">
+<section class="relative min-h-screen w-full flex flex-col items-center justify-center px-6 overflow-x-hidden">
 
   <!-- Gradient bars — original position -->
   <div class="absolute bottom-0 left-0 right-0 h-64 flex items-end pointer-events-none" aria-hidden="true">
@@ -29,7 +29,7 @@
 
 
   <!-- Content -->
-  <div class="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center gap-8">
+  <div class="relative z-10 w-full max-w-3xl mx-auto text-center flex flex-col items-center gap-8">
 
     <!-- Badge -->
     <div class="fade-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm"
@@ -100,7 +100,7 @@
 </section>
 
 <script>
-  const SCRIPT_URL = 'REPLACE_WITH_GOOGLE_APPS_SCRIPT_URL';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfUYcflfSDcnQa04wpyn5-1JpR5uZwYoxZyqvKwcW3-lEgf1rI7pEV59BPEf87oO8S/exec';
 
   const form = document.getElementById('waitlist-form') as HTMLFormElement;
   const input = document.getElementById('email-input') as HTMLInputElement;
