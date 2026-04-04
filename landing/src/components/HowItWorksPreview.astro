@@ -29,8 +29,7 @@
   <!-- Mirror bars with edge bleed for displacement -->
   <div id="sl-bars-wrap" class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:-15px;height:271px;z-index:1;overflow:hidden;">
-    <!-- SVG filter version — non-iOS -->
-    <div id="sl-bars-svg" style="position:relative;width:100%;height:100%;filter:url(#water-ripple);">
+    <div style="position:relative;width:100%;height:100%;filter:url(#water-ripple);">
       <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);">
         {Array.from({length: 20}).map((_, i) => {
           const pos = i / 19;
@@ -43,46 +42,6 @@
         })}
       </div>
     </div>
-    <!-- iOS SVG fallback: native SVG filter on SVG elements (not CSS filter:url on HTML) -->
-    <svg id="sl-water-svg" xmlns="http://www.w3.org/2000/svg"
-      width="100%" height="271"
-      style="display:none;overflow:visible;"
-      aria-hidden="true">
-      <defs>
-        <linearGradient id="sl-bar-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#9147ff" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#9147ff" stop-opacity="0"/>
-        </linearGradient>
-        <filter id="sl-svg-ripple" x="-20%" y="-20%" width="140%" height="140%"
-                color-interpolation-filters="sRGB">
-          <feTurbulence type="fractalNoise" baseFrequency="0.025 0.0008" numOctaves="2" result="noise">
-            <animate attributeName="baseFrequency"
-              values="0.022 0.0007;0.028 0.0009;0.022 0.0007"
-              dur="16s" repeatCount="indefinite"
-              calcMode="spline"
-              keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="8"
-            xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-      <g filter="url(#sl-svg-ripple)">
-        {Array.from({length: 20}).map((_, i) => {
-          const pos  = i / 19;
-          const dist = Math.abs(pos - 0.5) * 2;
-          const h    = ((30 + 70 * Math.pow(dist, 1.3)) / 100 * 271).toFixed(1);
-          const x    = (i / 20 * 100).toFixed(2);
-          const delay = (i * 0.08).toFixed(2);
-          return (
-            <rect x={`${x}%`} y="0" width="5.5%" height={h} fill="url(#sl-bar-grad)">
-              <animate attributeName="opacity" values="0.5;1;0.5"
-                dur="2s" begin={`${delay}s`} repeatCount="indefinite"
-                calcMode="spline" keySplines="0.4 0 0.6 1"/>
-            </rect>
-          );
-        })}
-      </g>
-    </svg>
   </div>
 
 
@@ -648,23 +607,6 @@
     pointer-events: none;
   }
 </style>
-
-<script>
-  // iOS fallback: show inline SVG with native filter (not CSS filter:url on HTML)
-  // WebKit bug #261806 — CSS filter:url() on HTML broken, SVG filter attr works
-  (function () {
-    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    if (!isIOS) return;
-
-    var svgDiv   = document.getElementById('sl-bars-svg');
-    var waterSvg = document.getElementById('sl-water-svg');
-    if (!svgDiv || !waterSvg) return;
-
-    svgDiv.style.display   = 'none';
-    waterSvg.style.display = 'block';
-  })();
-</script>
 
 <script>
   (function () {
