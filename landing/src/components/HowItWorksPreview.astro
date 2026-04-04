@@ -6,22 +6,37 @@
 
 <section id="how-it-works" class="sl-section" style="position:relative;overflow:hidden;">
 
+  <!-- SVG filter: animated water distortion -->
+  <svg class="absolute" style="width:0;height:0;" aria-hidden="true">
+    <filter id="water-ripple" x="-50%" y="-50%" width="200%" height="200%"
+            color-interpolation-filters="sRGB">
+      <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
+        <animate attributeName="baseFrequency"
+          values="0.015 0.044;0.019 0.052;0.015 0.044"
+          dur="16s" repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
+        xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
   <!-- CSS glow — matches Hero's radial glow -->
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
 
-  <!-- Mirror bars — CSS wave animation (iOS Safari compat, no SVG filter) -->
+  <!-- Mirror bars with edge bleed for displacement -->
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
-    style="top:-15px;height:271px;z-index:1;">
-    <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);">
+    style="top:-15px;height:271px;z-index:1;overflow:hidden;">
+    <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);filter:url(#water-ripple);">
       {Array.from({length: 20}).map((_, i) => {
         const pos = i / 19;
         const dist = Math.abs(pos - 0.5) * 2;
         const h = 30 + 70 * Math.pow(dist, 1.3);
-        const pulseDelay = (i * 0.08).toFixed(2);
-        const waveDelay = (i * 0.14).toFixed(2);
+        const delay = (i * 0.08).toFixed(2);
         return (
-          <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;transform-origin:bottom;animation:pulseBar 2s ease-in-out ${pulseDelay}s infinite alternate, waterWave 3s ease-in-out ${waveDelay}s infinite;`}></div>
+          <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;`}></div>
         );
       })}
     </div>
@@ -533,14 +548,6 @@
   }
   .sl-phone-frame {
     width: 270px;
-  }
-
-  /* ── Responsive bar count — fewer bars on smaller screens ── */
-  @media (max-width: 1023px) {
-    .sl-mirror-bars > div:nth-child(5n) { display: none; }
-  }
-  @media (max-width: 639px) {
-    .sl-mirror-bars > div:nth-child(3n) { display: none; }
   }
 
   /* ── Edge bleed for displacement filter — provides pixels at edges ── */
