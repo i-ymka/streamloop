@@ -43,8 +43,46 @@
         })}
       </div>
     </div>
-    <!-- Canvas version — iOS Safari only -->
-    <canvas id="sl-water-canvas" style="display:none;width:100%;height:271px;"></canvas>
+    <!-- iOS SVG fallback: native SVG filter on SVG elements (not CSS filter:url on HTML) -->
+    <svg id="sl-water-svg" xmlns="http://www.w3.org/2000/svg"
+      width="100%" height="271"
+      style="display:none;overflow:visible;"
+      aria-hidden="true">
+      <defs>
+        <linearGradient id="sl-bar-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#9147ff" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#9147ff" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="sl-svg-ripple" x="-20%" y="-20%" width="140%" height="140%"
+                color-interpolation-filters="sRGB">
+          <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
+            <animate attributeName="baseFrequency"
+              values="0.015 0.044;0.019 0.052;0.015 0.044"
+              dur="16s" repeatCount="indefinite"
+              calcMode="spline"
+              keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
+            xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <g filter="url(#sl-svg-ripple)">
+        {Array.from({length: 20}).map((_, i) => {
+          const pos  = i / 19;
+          const dist = Math.abs(pos - 0.5) * 2;
+          const h    = ((30 + 70 * Math.pow(dist, 1.3)) / 100 * 271).toFixed(1);
+          const x    = (i / 20 * 100).toFixed(2);
+          const delay = (i * 0.08).toFixed(2);
+          return (
+            <rect x={`${x}%`} y="0" width="5.5%" height={h} fill="url(#sl-bar-grad)">
+              <animate attributeName="opacity" values="0.5;1;0.5"
+                dur="2s" begin={`${delay}s`} repeatCount="indefinite"
+                calcMode="spline" keySplines="0.4 0 0.6 1"/>
+            </rect>
+          );
+        })}
+      </g>
+    </svg>
   </div>
 
 
@@ -612,96 +650,19 @@
 </style>
 
 <script>
-  // iOS water canvas — pixel displacement, replaces SVG filter (WebKit bug #261806)
+  // iOS fallback: show inline SVG with native filter (not CSS filter:url on HTML)
+  // WebKit bug #261806 — CSS filter:url() on HTML broken, SVG filter attr works
   (function () {
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (!isIOS) return;
 
-    var svgDiv = document.getElementById('sl-bars-svg');
-    var canvas = document.getElementById('sl-water-canvas');
-    if (!svgDiv || !canvas) return;
+    var svgDiv   = document.getElementById('sl-bars-svg');
+    var waterSvg = document.getElementById('sl-water-svg');
+    if (!svgDiv || !waterSvg) return;
 
-    svgDiv.style.display = 'none';
-    canvas.style.display = 'block';
-
-    var ctx = canvas.getContext('2d');
-    var N   = 20;
-    var H   = 271;
-    var t   = 0;
-
-    // offscreen canvas — рисуем чистые бары, потом двигаем пиксели
-    var off  = document.createElement('canvas');
-    var oCtx = off.getContext('2d');
-
-    var dst; // ImageData — выделяем один раз
-
-    function resize() {
-      var W     = window.innerWidth;
-      canvas.width  = W;
-      canvas.height = H;
-      off.width     = W;
-      off.height    = H;
-      dst = ctx.createImageData(W, H);
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    function draw() {
-      var W = canvas.width;
-
-      // 1. Рисуем чистые бары на offscreen (те же параметры что в HTML)
-      oCtx.clearRect(0, 0, W, H);
-      for (var i = 0; i < N; i++) {
-        var pos  = i / (N - 1);
-        var dist = Math.abs(pos - 0.5) * 2;
-        var barH = (0.30 + 0.70 * Math.pow(dist, 1.3)) * H;
-        var op   = (0.25 + 0.10 * Math.sin(t + i * 0.4)).toFixed(3);
-        var g    = oCtx.createLinearGradient(0, 0, 0, barH);
-        g.addColorStop(0, 'rgba(145,71,255,' + op + ')');
-        g.addColorStop(1, 'rgba(145,71,255,0)');
-        oCtx.fillStyle = g;
-        oCtx.fillRect((i / N) * W, 0, W / N + 0.5, barH);
-      }
-
-      // 2. Предвычисляем displacement по X и Y отдельно — O(W+H) вместо O(W*H)
-      var xD = new Float32Array(W);
-      var yD = new Float32Array(H);
-      for (var x = 0; x < W; x++) {
-        xD[x] = Math.sin(x * 0.016 + t * 0.45) * 9 +
-                Math.sin(x * 0.046 + t * 0.80) * 5;
-      }
-      for (var y = 0; y < H; y++) {
-        yD[y] = Math.sin(y * 0.022 + t * 0.55) * 10 +
-                Math.sin(y * 0.055 + t * 1.00) * 5  +
-                Math.sin(y * 0.12  + t * 1.60) * 2;
-      }
-
-      // 3. Pixel displacement — двигаем пиксели как feDisplacementMap scale=14
-      var src = oCtx.getImageData(0, 0, W, H);
-      var sd  = src.data;
-      var dd  = dst.data;
-
-      for (var py = 0; py < H; py++) {
-        for (var px = 0; px < W; px++) {
-          var sx = (px + xD[px] + 0.5) | 0;
-          var sy = (py + yD[py] + 0.5) | 0;
-          if (sx < 0) sx = 0; else if (sx >= W) sx = W - 1;
-          if (sy < 0) sy = 0; else if (sy >= H) sy = H - 1;
-          var si = (sy * W + sx) << 2;
-          var di = (py * W + px) << 2;
-          dd[di]     = sd[si];
-          dd[di + 1] = sd[si + 1];
-          dd[di + 2] = sd[si + 2];
-          dd[di + 3] = sd[si + 3];
-        }
-      }
-      ctx.putImageData(dst, 0, 0);
-
-      t += 0.013;
-      requestAnimationFrame(draw);
-    }
-    draw();
+    svgDiv.style.display   = 'none';
+    waterSvg.style.display = 'block';
   })();
 </script>
 
