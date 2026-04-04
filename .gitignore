@@ -1,11 +1,6 @@
 # AI & project docs (not for repo)
-TECH_SPEC.md
-ARCHITECTURE.md
-DECISION_LOG.md
+docs/
 MEMORY.md
-ROADMAP.md
-SPEC_*.md
-TASKS.md
 
 # Env
 .env
