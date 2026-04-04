@@ -612,62 +612,91 @@
 </style>
 
 <script>
-  // iOS water canvas — SVG filter:url() broken in WebKit (bug #261806)
+  // iOS water canvas — pixel displacement, replaces SVG filter (WebKit bug #261806)
   (function () {
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (!isIOS) return;
 
-    var wrap   = document.getElementById('sl-bars-wrap');
     var svgDiv = document.getElementById('sl-bars-svg');
     var canvas = document.getElementById('sl-water-canvas');
-    if (!wrap || !svgDiv || !canvas) return;
+    if (!svgDiv || !canvas) return;
 
     svgDiv.style.display = 'none';
     canvas.style.display = 'block';
 
-    var ctx    = canvas.getContext('2d');
-    var N      = 20;
-    var t      = 0;
-    var H_FIXED = 271; // фиксировано в CSS, не зависит от layout
+    var ctx = canvas.getContext('2d');
+    var N   = 20;
+    var H   = 271;
+    var t   = 0;
+
+    // offscreen canvas — рисуем чистые бары, потом двигаем пиксели
+    var off  = document.createElement('canvas');
+    var oCtx = off.getContext('2d');
+
+    var dst; // ImageData — выделяем один раз
 
     function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = H_FIXED;
+      var W     = window.innerWidth;
+      canvas.width  = W;
+      canvas.height = H;
+      off.width     = W;
+      off.height    = H;
+      dst = ctx.createImageData(W, H);
     }
-
-    window.addEventListener('load', resize);
-    window.addEventListener('resize', resize);
     resize();
+    window.addEventListener('resize', resize);
 
     function draw() {
       var W = canvas.width;
-      var H = H_FIXED;
-      ctx.clearRect(0, 0, W, H_FIXED);
 
+      // 1. Рисуем чистые бары на offscreen (те же параметры что в HTML)
+      oCtx.clearRect(0, 0, W, H);
       for (var i = 0; i < N; i++) {
-        var pos   = i / (N - 1);
-        var dist  = Math.abs(pos - 0.5) * 2;
-        // те же формулы что в HTML барах (30 + 70 * dist^1.3)
-        var baseH = (0.30 + 0.70 * Math.pow(dist, 1.3)) * H;
-
-        // 3-октавный шум как feTurbulence numOctaves=3, scale=14
-        var noise =
-          Math.sin(i * 0.70 + t * 0.60) * 14 +
-          Math.sin(i * 1.50 + t * 1.10) * 8  +
-          Math.sin(i * 3.00 + t * 1.80) * 4;
-
-        var barH    = Math.max(4, baseH + noise);
-        // opacity 0.25–0.35 как pulseBar анимация (opacity:0.35 в HTML)
-        var opacity = (0.25 + 0.10 * Math.sin(t * 1.5 + i * 0.4)).toFixed(3);
-
-        // mirrored: solid сверху → transparent снизу (scaleY(-1) эквивалент)
-        var grad = ctx.createLinearGradient(0, 0, 0, barH);
-        grad.addColorStop(0, 'rgba(145,71,255,' + opacity + ')');
-        grad.addColorStop(1, 'rgba(145,71,255,0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect((i / N) * W, 0, W / N + 0.5, barH);
+        var pos  = i / (N - 1);
+        var dist = Math.abs(pos - 0.5) * 2;
+        var barH = (0.30 + 0.70 * Math.pow(dist, 1.3)) * H;
+        var op   = (0.25 + 0.10 * Math.sin(t + i * 0.4)).toFixed(3);
+        var g    = oCtx.createLinearGradient(0, 0, 0, barH);
+        g.addColorStop(0, 'rgba(145,71,255,' + op + ')');
+        g.addColorStop(1, 'rgba(145,71,255,0)');
+        oCtx.fillStyle = g;
+        oCtx.fillRect((i / N) * W, 0, W / N + 0.5, barH);
       }
+
+      // 2. Предвычисляем displacement по X и Y отдельно — O(W+H) вместо O(W*H)
+      var xD = new Float32Array(W);
+      var yD = new Float32Array(H);
+      for (var x = 0; x < W; x++) {
+        xD[x] = Math.sin(x * 0.016 + t * 0.45) * 9 +
+                Math.sin(x * 0.046 + t * 0.80) * 5;
+      }
+      for (var y = 0; y < H; y++) {
+        yD[y] = Math.sin(y * 0.022 + t * 0.55) * 10 +
+                Math.sin(y * 0.055 + t * 1.00) * 5  +
+                Math.sin(y * 0.12  + t * 1.60) * 2;
+      }
+
+      // 3. Pixel displacement — двигаем пиксели как feDisplacementMap scale=14
+      var src = oCtx.getImageData(0, 0, W, H);
+      var sd  = src.data;
+      var dd  = dst.data;
+
+      for (var py = 0; py < H; py++) {
+        for (var px = 0; px < W; px++) {
+          var sx = (px + xD[px] + 0.5) | 0;
+          var sy = (py + yD[py] + 0.5) | 0;
+          if (sx < 0) sx = 0; else if (sx >= W) sx = W - 1;
+          if (sy < 0) sy = 0; else if (sy >= H) sy = H - 1;
+          var si = (sy * W + sx) << 2;
+          var di = (py * W + px) << 2;
+          dd[di]     = sd[si];
+          dd[di + 1] = sd[si + 1];
+          dd[di + 2] = sd[si + 2];
+          dd[di + 3] = sd[si + 3];
+        }
+      }
+      ctx.putImageData(dst, 0, 0);
 
       t += 0.013;
       requestAnimationFrame(draw);
