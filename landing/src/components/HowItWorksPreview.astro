@@ -42,6 +42,40 @@
         })}
       </div>
     </div>
+    <!-- iOS only: SVG bars + JS-animated feTurbulence (CSS filter:url broken on iOS, WebKit bug) -->
+    <svg id="sl-bars-ios" xmlns="http://www.w3.org/2000/svg"
+      width="100%" height="271"
+      style="display:none;position:absolute;top:0;left:0;"
+      aria-hidden="true">
+      <defs>
+        <linearGradient id="sl-ios-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#9147ff" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#9147ff" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="sl-ios-filter" x="-20%" y="-20%" width="140%" height="140%"
+                color-interpolation-filters="sRGB">
+          <feTurbulence id="sl-ios-turb" type="fractalNoise"
+            baseFrequency="0.016 0.04" numOctaves="3" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
+            xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <g id="sl-ios-bars" filter="url(#sl-ios-filter)">
+        {Array.from({length: 20}).map((_, i) => {
+          const pos  = i / 19;
+          const dist = Math.abs(pos - 0.5) * 2;
+          const h    = ((30 + 70 * Math.pow(dist, 1.3)) / 100 * 271).toFixed(1);
+          const delay = (i * 0.08).toFixed(2);
+          return (
+            <rect data-i={i} x="0" y="0" width="0" height={h} fill="url(#sl-ios-grad)">
+              <animate attributeName="opacity" values="0.5;1;0.5"
+                dur="4s" begin={`${delay}s`} repeatCount="indefinite"
+                calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+            </rect>
+          );
+        })}
+      </g>
+    </svg>
   </div>
 
 
@@ -609,14 +643,48 @@
 </style>
 
 <script>
-  // iOS: remove CSS filter (filter:url on HTML broken - WebKit bug #261806)
-  // Shows clean mirror without water effect — better than broken/squiggly filter
+  // iOS water: CSS filter:url on HTML broken (WebKit bug #261806)
+  // SVG filter="url()" on SVG elements works, but SMIL <animate> on feTurbulence is cached as GPU shader
+  // Fix: animate feTurbulence.baseFrequency via JS setAttribute in rAF — bypasses shader cache
   (function () {
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (!isIOS) return;
-    var el = document.getElementById('sl-bars-html');
-    if (el) el.style.filter = 'none';
+
+    // Switch visibility
+    var htmlBars = document.getElementById('sl-bars-html');
+    var iosSvg   = document.getElementById('sl-bars-ios');
+    if (htmlBars) htmlBars.style.display = 'none';
+    if (!iosSvg)  return;
+    iosSvg.style.display = 'block';
+
+    // Match mobile nth-child CSS: hide every 3rd bar (<640px), every 5th (<1024px)
+    var allRects = Array.from(iosSvg.querySelectorAll('rect'));
+    var w = window.innerWidth;
+    var visible = allRects.filter(function(_, i) {
+      if (w < 640)  return (i + 1) % 3 !== 0;
+      if (w < 1024) return (i + 1) % 5 !== 0;
+      return true;
+    });
+    // Reposition visible bars to fill 100% width evenly
+    var n = visible.length;
+    visible.forEach(function(rect, j) {
+      rect.setAttribute('x', (j / n * 100).toFixed(2) + '%');
+      rect.setAttribute('width', (100 / n - 0.3).toFixed(2) + '%');
+    });
+
+    // Animate feTurbulence via JS setAttribute — not SMIL (which is shader-cached on iOS)
+    var turb = document.getElementById('sl-ios-turb');
+    if (!turb) return;
+    var phase = 0;
+    function tick() {
+      phase += 0.003;
+      var bfX = (0.015 + Math.sin(phase) * 0.004).toFixed(4);
+      var bfY = (0.038 + Math.sin(phase * 1.3) * 0.01).toFixed(4);
+      turb.setAttribute('baseFrequency', bfX + ' ' + bfY);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
   })();
 </script>
 
