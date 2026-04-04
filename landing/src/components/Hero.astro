@@ -7,7 +7,7 @@
 <section class="relative min-h-screen w-full flex flex-col items-center justify-center px-6 overflow-x-hidden">
 
   <!-- Gradient bars — original position -->
-  <div class="absolute bottom-0 left-0 right-0 h-64 flex items-end pointer-events-none" aria-hidden="true">
+  <div class="hero-bars absolute bottom-0 left-0 right-0 h-64 flex items-end pointer-events-none" aria-hidden="true">
     {Array.from({length: 20}).map((_, i) => {
       const pos = i / 19;
       const dist = Math.abs(pos - 0.5) * 2;
@@ -138,3 +138,12 @@
     }
   });
 </script>
+
+<style>
+  @media (max-width: 1023px) {
+    .hero-bars > div:nth-child(5n) { display: none; }
+  }
+  @media (max-width: 639px) {
+    .hero-bars > div:nth-child(3n) { display: none; }
+  }
+</style>
