@@ -26,6 +26,22 @@
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
 
+  <!-- iOS mirror SVG: static structure, JS populates rects. Static markup = WebKit captures SourceGraphic correctly. -->
+  <svg id="ios-mirror-svg" aria-hidden="true"
+    style="position:absolute;top:-15px;left:0;width:100%;height:271px;z-index:1;display:none;pointer-events:none;overflow:visible;">
+    <defs>
+      <filter id="ios-water-ripple" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+        <feTurbulence id="ios-turb" type="fractalNoise" baseFrequency="0.016 0.046" numOctaves="3" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <linearGradient id="ios-bar-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#9147ff"/>
+        <stop offset="1" stop-color="#9147ff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <g id="ios-mirror-g" filter="url(#ios-water-ripple)" class="ios-mirror-g"></g>
+  </svg>
+
   <!-- Mirror bars with edge bleed for displacement -->
   <div id="sl-bars-wrap" class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:-15px;height:271px;z-index:1;overflow:hidden;">
@@ -613,120 +629,57 @@
 </style>
 
 <script>
-  // iOS: CSS filter:url on HTML broken (WebKit bug #261806)
-  // Fix: replicate Hero bars as SVG rects, apply filter inside SVG (works on iOS)
-  // feGaussianBlur on noise before displacement fixes squiggly lines
-  // rAF setAttribute on feTurbulence bypasses iOS GPU shader cache
+  // iOS water: static SVG in template, JS only populates rects
+  // Static markup = WebKit captures SourceGraphic for filter correctly
   (function () {
     var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     if (!isIOS) return;
 
-    var rafId;
+    var tickTimer;
 
     function build() {
-      if (rafId) cancelAnimationFrame(rafId);
+      if (tickTimer) { clearTimeout(tickTimer); tickTimer = null; }
 
-      var wrap = document.getElementById('sl-bars-wrap');
-      if (!wrap) return;
+      var svg = document.getElementById('ios-mirror-svg');
+      var g   = document.getElementById('ios-mirror-g');
+      if (!svg || !g) return;
 
-      // Remove old SVG if rebuilding on resize
-      var old = document.getElementById('ios-water-svg');
-      if (old) old.remove();
-
-      // Read Hero bars — apply same nth-child rules as CSS (1-based index)
-      // @media max-width:1023px → hide 5n; @media max-width:639px → also hide 3n
-      var w = window.innerWidth;
+      // Read Hero bars with same nth-child rules as CSS
+      var vw = window.innerWidth;
       var allBars = Array.from(document.querySelectorAll('.hero-bars > div'));
       if (!allBars.length) return;
       var heroBars = allBars.filter(function (_, i) {
-        var n = i + 1; // nth-child is 1-based
-        if (w < 640 && (n % 3 === 0 || n % 5 === 0)) return false;
-        if (w < 1024 && n % 5 === 0) return false;
+        var n = i + 1;
+        if (vw < 640 && (n % 3 === 0 || n % 5 === 0)) return false;
+        if (vw < 1024 && n % 5 === 0) return false;
         return true;
       });
       if (!heroBars.length) return;
 
-      // Hide HTML bars only after we confirmed we have data to replace them
+      // Hide HTML bars (CSS filter:url broken on iOS)
       var htmlBars = document.getElementById('sl-bars-html');
       if (htmlBars) htmlBars.style.visibility = 'hidden';
 
+      // Show static iOS SVG
+      svg.style.display = 'block';
 
+      var totalW = svg.offsetWidth;
+      var totalH = svg.offsetHeight;
+      if (!totalW || !totalH) { tickTimer = setTimeout(build, 100); return; }
 
-      var ns = 'http://www.w3.org/2000/svg';
-      var svg = document.createElementNS(ns, 'svg');
-      svg.id = 'ios-water-svg';
-      svg.setAttribute('width', '100%');
-      svg.setAttribute('height', '100%');
-      svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
+      svg.setAttribute('width', totalW);
+      svg.setAttribute('height', totalH);
 
-      var defs = document.createElementNS(ns, 'defs');
-
-      // Filter: turbulence → blur (fixes squiggly lines) → displacement
-      var filter = document.createElementNS(ns, 'filter');
-      filter.id = 'ios-water-ripple';
-      filter.setAttribute('x', '-50%');
-      filter.setAttribute('y', '-50%');
-      filter.setAttribute('width', '200%');
-      filter.setAttribute('height', '200%');
-      filter.setAttribute('color-interpolation-filters', 'sRGB');
-
-      var turb = document.createElementNS(ns, 'feTurbulence');
-      turb.id = 'ios-turb';
-      turb.setAttribute('type', 'fractalNoise');
-      turb.setAttribute('baseFrequency', '0.016 0.046');
-      turb.setAttribute('numOctaves', '3');
-      turb.setAttribute('result', 'noise');
-
-      var disp = document.createElementNS(ns, 'feDisplacementMap');
-      disp.setAttribute('in', 'SourceGraphic');
-      disp.setAttribute('in2', 'noise');
-      disp.setAttribute('scale', '14');
-      disp.setAttribute('xChannelSelector', 'R');
-      disp.setAttribute('yChannelSelector', 'G');
-      filter.appendChild(turb);
-      filter.appendChild(disp);
-
-      // Gradient: mirrored bars → purple at top, transparent at bottom
-      var grad = document.createElementNS(ns, 'linearGradient');
-      grad.id = 'ios-bar-grad';
-      grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
-      grad.setAttribute('x2', '0'); grad.setAttribute('y2', '1');
-      grad.setAttribute('gradientUnits', 'userSpaceOnUse');
-      grad.setAttribute('y1', '0');
-      grad.setAttribute('y2', String(totalH));
-      var s1 = document.createElementNS(ns, 'stop');
-      s1.setAttribute('offset', '0');
-      s1.setAttribute('stop-color', '#9147ff');
-      var s2 = document.createElementNS(ns, 'stop');
-      s2.setAttribute('offset', '1');
-      s2.setAttribute('stop-color', '#9147ff');
-      s2.setAttribute('stop-opacity', '0');
-      grad.appendChild(s1);
-      grad.appendChild(s2);
-
-      defs.appendChild(filter);
-      defs.appendChild(grad);
-      svg.appendChild(defs);
-
-      // Bars group — static opacity, no animation (lamp handles all light)
-      var g = document.createElementNS(ns, 'g');
-      g.setAttribute('filter', 'url(#ios-water-ripple)');
-      g.setAttribute('class', 'ios-mirror-g');
-
-      var totalW = wrap.offsetWidth;
-      var totalH = wrap.offsetHeight;
-      // Layout not ready yet — retry after paint
-      if (!totalW || !totalH) { setTimeout(build, 100); return; }
+      // Remove previous rects
+      while (g.firstChild) g.removeChild(g.firstChild);
 
       var count = heroBars.length;
-      var rects = [];
       heroBars.forEach(function (bar, idx) {
         var hPct = parseFloat(bar.style.height);
         var x = Math.floor(idx * totalW / count);
         var w = Math.floor((idx + 1) * totalW / count) - x;
         var h = Math.round(hPct / 100 * totalH);
-
-        var rect = document.createElementNS(ns, 'rect');
+        var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rect.setAttribute('x', x);
         rect.setAttribute('y', 0);
         rect.setAttribute('width', w);
@@ -735,31 +688,25 @@
         g.appendChild(rect);
       });
 
-      svg.appendChild(g);
-      wrap.appendChild(svg);
-
-
-      // setTimeout tick: only turbulence animation
+      // Animate turbulence via setTimeout (bypasses iOS GPU shader cache)
       var t = 0;
       function tick() {
         t += 0.008;
-        var bf1 = (0.016 + 0.002 * Math.sin(t)).toFixed(5);
-        var bf2 = (0.046 + 0.004 * Math.sin(t)).toFixed(5);
-        var turbEl = document.getElementById('ios-turb');
-        if (turbEl) turbEl.setAttribute('baseFrequency', bf1 + ' ' + bf2);
-        rafId = setTimeout(tick, 100);
+        var el = document.getElementById('ios-turb');
+        if (el) el.setAttribute('baseFrequency',
+          (0.016 + 0.002 * Math.sin(t)).toFixed(5) + ' ' +
+          (0.046 + 0.004 * Math.sin(t)).toFixed(5));
+        tickTimer = setTimeout(tick, 100);
       }
       tick();
     }
 
-    // DOMContentLoaded — same moment Hero animation starts, so no sync needed
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', build);
     } else {
       build();
     }
 
-    // Rebuild on resize — bar count changes at CSS breakpoints
     var resizeTimer;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
