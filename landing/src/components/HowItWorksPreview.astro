@@ -733,15 +733,16 @@
       svg.appendChild(g);
       wrap.appendChild(svg);
 
-      // Animate turbulence via rAF — bypasses iOS GPU shader cache
+      // Animate turbulence at 10fps via setTimeout — water cycle is 16s so 10fps is imperceptible
+      // rAF at 60fps caused severe lag on iOS
       var t = 0;
       function tick() {
-        t += 0.0005;
+        t += 0.008; // ~0.0005 * 16 frames worth to match original speed
         var bf1 = (0.016 + 0.002 * Math.sin(t)).toFixed(5);
         var bf2 = (0.046 + 0.004 * Math.sin(t)).toFixed(5);
         var el = document.getElementById('ios-turb');
         if (el) el.setAttribute('baseFrequency', bf1 + ' ' + bf2);
-        rafId = requestAnimationFrame(tick);
+        rafId = setTimeout(tick, 100);
       }
       tick();
     }
