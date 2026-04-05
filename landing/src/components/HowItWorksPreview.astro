@@ -651,6 +651,8 @@
       svg.id = 'ios-water-svg';
       svg.setAttribute('width', '100%');
       svg.setAttribute('height', '100%');
+      svg.setAttribute('viewBox', '0 0 1000 100');
+      svg.setAttribute('preserveAspectRatio', 'none');
       svg.style.cssText = 'position:absolute;top:0;left:0;';
 
       var defs = document.createElementNS(ns, 'defs');
@@ -691,6 +693,7 @@
       grad.id = 'ios-bar-grad';
       grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
       grad.setAttribute('x2', '0'); grad.setAttribute('y2', '1');
+      grad.setAttribute('gradientUnits', 'objectBoundingBox');
       var s1 = document.createElementNS(ns, 'stop');
       s1.setAttribute('offset', '0');
       s1.setAttribute('stop-color', '#9147ff');
@@ -713,13 +716,15 @@
       heroBars.forEach(function (bar, idx) {
         var h = parseFloat(bar.style.height);       // e.g. 65 from "65%"
         var delay = bar.style.animationDelay || '0s';
-        var barW = 100 / count;
+        // Integer pixel positions in viewBox coords — no float accumulation errors
+        var x = Math.floor(idx * 1000 / count);
+        var w = Math.floor((idx + 1) * 1000 / count) - x;
 
         var rect = document.createElementNS(ns, 'rect');
-        rect.setAttribute('x', (idx * barW) + '%');
-        rect.setAttribute('y', '0');
-        rect.setAttribute('width', barW + '%');
-        rect.setAttribute('height', h + '%');
+        rect.setAttribute('x', x);
+        rect.setAttribute('y', 0);
+        rect.setAttribute('width', w);
+        rect.setAttribute('height', h);
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
         rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + delay + ' infinite alternate;';
         g.appendChild(rect);
