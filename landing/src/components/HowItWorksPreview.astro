@@ -714,10 +714,9 @@
       g.setAttribute('filter', 'url(#ios-water-ripple)');
 
       var count = heroBars.length;
+      var rects = [];
       heroBars.forEach(function (bar, idx) {
-        var h = parseFloat(bar.style.height);       // e.g. 65 from "65%"
-        var delay = bar.style.animationDelay || '0s';
-        // Integer pixel positions in viewBox coords — no float accumulation errors
+        var h = parseFloat(bar.style.height);
         var x = Math.floor(idx * 1000 / count);
         var w = Math.floor((idx + 1) * 1000 / count) - x;
 
@@ -727,24 +726,31 @@
         rect.setAttribute('width', w);
         rect.setAttribute('height', h);
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
-        // CSS animation on SVG rect runs on GPU at 60fps — independent of setTimeout turbulence
-        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + delay + ' infinite alternate;';
+        rect.setAttribute('opacity', '0.35');
         g.appendChild(rect);
+        rects.push({ rect: rect, heroBar: bar });
       });
 
       svg.appendChild(g);
       wrap.appendChild(svg);
 
-      // Animate turbulence at 10fps via setTimeout — water cycle is 16s so 10fps is imperceptible
-      // rAF at 60fps caused severe lag on iOS
+      // setTimeout tick: update turbulence (water) + mirror Hero bar opacity (light sync)
+      // Opacity is read directly from Hero bars — physically cannot desync
       var t = 0;
       function tick() {
-        t += 0.008; // ~0.0005 * 16 frames worth to match original speed
+        t += 0.008;
         var bf1 = (0.016 + 0.002 * Math.sin(t)).toFixed(5);
         var bf2 = (0.046 + 0.004 * Math.sin(t)).toFixed(5);
-        var el = document.getElementById('ios-turb');
-        if (el) el.setAttribute('baseFrequency', bf1 + ' ' + bf2);
-        rafId = setTimeout(tick, 100);
+        var turbEl = document.getElementById('ios-turb');
+        if (turbEl) turbEl.setAttribute('baseFrequency', bf1 + ' ' + bf2);
+
+        // Mirror Hero bar opacity — single source of truth
+        rects.forEach(function (item) {
+          var opacity = getComputedStyle(item.heroBar).opacity;
+          item.rect.setAttribute('opacity', opacity);
+        });
+
+        rafId = setTimeout(tick, 50); // 20fps — smooth enough for 2s pulse, no lag
       }
       tick();
     }
