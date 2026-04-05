@@ -646,6 +646,21 @@
       var htmlBars = document.getElementById('sl-bars-html');
       if (htmlBars) htmlBars.style.visibility = 'hidden';
 
+      // Remove old light layer if rebuilding
+      var oldLight = document.getElementById('ios-light-layer');
+      if (oldLight) oldLight.remove();
+
+      // Light layer: pure HTML divs with CSS pulseBar — identical to Hero, always in sync
+      var lightLayer = document.createElement('div');
+      lightLayer.id = 'ios-light-layer';
+      lightLayer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);pointer-events:none;';
+      heroBars.forEach(function (bar) {
+        var div = document.createElement('div');
+        div.style.cssText = bar.style.cssText; // exact copy: height, background, opacity, animation
+        lightLayer.appendChild(div);
+      });
+      wrap.appendChild(lightLayer);
+
       var ns = 'http://www.w3.org/2000/svg';
       var svg = document.createElementNS(ns, 'svg');
       svg.id = 'ios-water-svg';
@@ -653,7 +668,7 @@
       svg.setAttribute('height', '100%');
       svg.setAttribute('viewBox', '0 0 1000 100');
       svg.setAttribute('preserveAspectRatio', 'none');
-      svg.style.cssText = 'position:absolute;top:0;left:0;';
+      svg.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
 
       var defs = document.createElementNS(ns, 'defs');
 
@@ -681,7 +696,7 @@
       var disp = document.createElementNS(ns, 'feDisplacementMap');
       disp.setAttribute('in', 'SourceGraphic');
       disp.setAttribute('in2', 'softNoise');
-      disp.setAttribute('scale', '10');
+      disp.setAttribute('scale', '18');
       disp.setAttribute('xChannelSelector', 'R');
       disp.setAttribute('yChannelSelector', 'G');
       filter.appendChild(turb);
@@ -726,7 +741,7 @@
         rect.setAttribute('width', w);
         rect.setAttribute('height', h);
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
-        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + delay + ' infinite alternate;';
+        rect.setAttribute('opacity', '0.35');
         g.appendChild(rect);
       });
 
