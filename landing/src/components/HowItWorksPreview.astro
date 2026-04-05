@@ -714,9 +714,12 @@
       g.setAttribute('filter', 'url(#ios-water-ripple)');
       g.style.cssText = 'animation:pulseBar 2s ease-in-out 0s infinite alternate;';
 
-      var count = heroBars.length;
       var totalW = wrap.offsetWidth;
       var totalH = wrap.offsetHeight;
+      // Layout not ready yet — retry after paint
+      if (!totalW || !totalH) { setTimeout(build, 100); return; }
+
+      var count = heroBars.length;
       var rects = [];
       heroBars.forEach(function (bar, idx) {
         var hPct = parseFloat(bar.style.height);
