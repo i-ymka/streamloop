@@ -718,14 +718,10 @@
         var rect = document.createElementNS(ns, 'rect');
         rect.setAttribute('x', (idx * barW) + '%');
         rect.setAttribute('y', '0');
-        rect.setAttribute('width', (barW + 0.8) + '%');
+        rect.setAttribute('width', barW + '%');
         rect.setAttribute('height', h + '%');
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
-        // Sync animation phase with Hero: subtract elapsed time so both are at same point in cycle
-        // pulseBar period = 4000ms (2s alternate = forward + back)
-        var originalDelayMs = parseFloat(delay) * 1000 || 0;
-        var syncDelay = ((originalDelayMs - performance.now()) % 4000);
-        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + syncDelay + 'ms infinite alternate;';
+        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + delay + ' infinite alternate;';
         g.appendChild(rect);
       });
 
