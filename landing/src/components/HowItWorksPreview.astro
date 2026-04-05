@@ -42,37 +42,6 @@
         })}
       </div>
     </div>
-    <!-- iOS only: SVG bars + JS-animated feTurbulence (CSS filter:url broken on iOS, WebKit bug) -->
-    <svg id="sl-bars-ios" xmlns="http://www.w3.org/2000/svg"
-      width="100%" height="271"
-      style="display:none;position:absolute;top:0;left:0;overflow:visible;"
-      aria-hidden="true">
-      <defs>
-        <linearGradient id="sl-ios-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#9147ff" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#9147ff" stop-opacity="0"/>
-        </linearGradient>
-        <filter id="sl-ios-filter" x="-30%" y="-30%" width="160%" height="160%"
-                color-interpolation-filters="sRGB">
-          <feTurbulence id="sl-ios-turb" type="fractalNoise"
-            baseFrequency="0.016 0.04" numOctaves="3" result="noise"/>
-          <feDisplacementMap id="sl-ios-disp" in="SourceGraphic" in2="noise" scale="12"
-            xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-      </defs>
-      <g id="sl-ios-bars" filter="url(#sl-ios-filter)">
-        {Array.from({length: 20}).map((_, i) => {
-          const pos  = i / 19;
-          const dist = Math.abs(pos - 0.5) * 2;
-          const h    = ((30 + 70 * Math.pow(dist, 1.3)) / 100 * 271).toFixed(1);
-          const delay = (i * 0.08).toFixed(2);
-          return (
-            <rect data-i={i} data-delay={delay} x="0" y="0" width="0" height={h}
-              fill="url(#sl-ios-grad)" opacity="0.5"/>
-          );
-        })}
-      </g>
-    </svg>
   </div>
 
 
@@ -640,66 +609,15 @@
 </style>
 
 <script>
-  // iOS water: CSS filter:url on HTML broken (WebKit bug #261806)
-  // SVG filter="url()" on SVG elements works, but SMIL <animate> on feTurbulence is cached as GPU shader
-  // Fix: animate feTurbulence.baseFrequency via JS setAttribute in rAF — bypasses shader cache
+  // iOS: CSS filter:url on HTML broken (WebKit bug #261806)
+  // Show clean mirror — remove filter, bars match Hero exactly
+  // Water effect on iOS: see DECISION_LOG.md for full history of attempts
   (function () {
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (!isIOS) return;
-
-    // Switch visibility — opacity:0 not display:none to preserve layout (prevents gap)
-    var htmlBars = document.getElementById('sl-bars-html');
-    var iosSvg   = document.getElementById('sl-bars-ios');
-    if (htmlBars) htmlBars.style.opacity = '0';
-    if (!iosSvg)  return;
-    iosSvg.style.display = 'block';
-
-    // Match BOTH CSS rules that apply simultaneously on mobile:
-    // <1024px: hide nth-child(5n)  → bars 5,10,15,20 hidden
-    // <640px:  hide nth-child(3n)  → bars 3,6,9,12,15,18 hidden  (UNION with above)
-    // Result on iPhone: 9 hidden → 11 visible (same as Hero and sl-mirror-bars)
-    var allRects = Array.from(iosSvg.querySelectorAll('rect'));
-    var w = window.innerWidth;
-    var visible = allRects.filter(function(_, i) {
-      var nth = i + 1;
-      if (w < 1024 && nth % 5 === 0) return false;
-      if (w < 640  && nth % 3 === 0) return false;
-      return true;
-    });
-    // Hide all, then show and reposition only visible bars with slight overlap to kill gaps
-    allRects.forEach(function(r) { r.setAttribute('display', 'none'); });
-    var n = visible.length;
-    var barW = (100 / n + 0.6).toFixed(2); // +0.6% overlap hides sub-pixel gaps
-    visible.forEach(function(rect, j) {
-      rect.setAttribute('display', 'inline');
-      rect.setAttribute('x', (j / n * 100).toFixed(2) + '%');
-      rect.setAttribute('width', barW + '%');
-    });
-
-    // Animate feTurbulence + bar opacity via JS (SMIL not reliable on iOS)
-    var turb = document.getElementById('sl-ios-turb');
-    if (!turb) return;
-    // Collect visible bars with their delay offsets for opacity animation
-    var animBars = visible.map(function(rect) {
-      return { el: rect, delay: parseFloat(rect.getAttribute('data-delay') || '0') };
-    });
-    var phase = 0;
-    function tick(ts) {
-      var t = ts / 1000;
-      phase += 0.003;
-      // Water turbulence
-      var bfX = (0.015 + Math.sin(phase) * 0.004).toFixed(4);
-      var bfY = (0.038 + Math.sin(phase * 1.3) * 0.01).toFixed(4);
-      turb.setAttribute('baseFrequency', bfX + ' ' + bfY);
-      // Pulse opacity — matches Hero pulseBar (0.5→1 alternate, 2s per direction)
-      animBars.forEach(function(b) {
-        var op = 0.5 + 0.5 * (0.5 + 0.5 * Math.sin((t - b.delay) * Math.PI / 2 - Math.PI / 2));
-        b.el.setAttribute('opacity', op.toFixed(3));
-      });
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+    var el = document.getElementById('sl-bars-html');
+    if (el) el.style.filter = 'none';
   })();
 </script>
 
