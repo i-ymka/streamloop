@@ -610,14 +610,140 @@
 
 <script>
   // iOS: CSS filter:url on HTML broken (WebKit bug #261806)
-  // Show clean mirror — remove filter, bars match Hero exactly
-  // Water effect on iOS: see DECISION_LOG.md for full history of attempts
+  // Fix: replicate Hero bars as SVG rects, apply filter inside SVG (works on iOS)
+  // feGaussianBlur on noise before displacement fixes squiggly lines
+  // rAF setAttribute on feTurbulence bypasses iOS GPU shader cache
   (function () {
-    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     if (!isIOS) return;
-    var el = document.getElementById('sl-bars-html');
-    if (el) el.style.filter = 'none';
+
+    var rafId;
+
+    function build() {
+      if (rafId) cancelAnimationFrame(rafId);
+
+      var wrap = document.getElementById('sl-bars-wrap');
+      if (!wrap) return;
+
+      // Remove old SVG if rebuilding on resize
+      var old = document.getElementById('ios-water-svg');
+      if (old) old.remove();
+
+      // Read visible Hero bars — nth-child CSS already applied, just filter display:none
+      var heroBars = Array.from(document.querySelectorAll('.hero-bars > div'))
+        .filter(function (el) { return getComputedStyle(el).display !== 'none'; });
+      if (!heroBars.length) return;
+
+      // Hide HTML bars only after we confirmed we have data to replace them
+      var htmlBars = document.getElementById('sl-bars-html');
+      if (htmlBars) htmlBars.style.visibility = 'hidden';
+
+      var ns = 'http://www.w3.org/2000/svg';
+      var svg = document.createElementNS(ns, 'svg');
+      svg.id = 'ios-water-svg';
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+      svg.style.cssText = 'position:absolute;top:0;left:0;';
+
+      var defs = document.createElementNS(ns, 'defs');
+
+      // Filter: turbulence → blur (fixes squiggly lines) → displacement
+      var filter = document.createElementNS(ns, 'filter');
+      filter.id = 'ios-water-ripple';
+      filter.setAttribute('x', '-50%');
+      filter.setAttribute('y', '-50%');
+      filter.setAttribute('width', '200%');
+      filter.setAttribute('height', '200%');
+      filter.setAttribute('color-interpolation-filters', 'sRGB');
+
+      var turb = document.createElementNS(ns, 'feTurbulence');
+      turb.id = 'ios-turb';
+      turb.setAttribute('type', 'turbulence');
+      turb.setAttribute('baseFrequency', '0.016 0.046');
+      turb.setAttribute('numOctaves', '3');
+      turb.setAttribute('result', 'noise');
+
+      var blurNoise = document.createElementNS(ns, 'feGaussianBlur');
+      blurNoise.setAttribute('in', 'noise');
+      blurNoise.setAttribute('stdDeviation', '3');
+      blurNoise.setAttribute('result', 'softNoise');
+
+      var disp = document.createElementNS(ns, 'feDisplacementMap');
+      disp.setAttribute('in', 'SourceGraphic');
+      disp.setAttribute('in2', 'softNoise');
+      disp.setAttribute('scale', '14');
+      disp.setAttribute('xChannelSelector', 'R');
+      disp.setAttribute('yChannelSelector', 'G');
+
+      filter.appendChild(turb);
+      filter.appendChild(blurNoise);
+      filter.appendChild(disp);
+
+      // Gradient: mirrored bars → purple at top, transparent at bottom
+      var grad = document.createElementNS(ns, 'linearGradient');
+      grad.id = 'ios-bar-grad';
+      grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
+      grad.setAttribute('x2', '0'); grad.setAttribute('y2', '1');
+      var s1 = document.createElementNS(ns, 'stop');
+      s1.setAttribute('offset', '0');
+      s1.setAttribute('stop-color', '#9147ff');
+      var s2 = document.createElementNS(ns, 'stop');
+      s2.setAttribute('offset', '1');
+      s2.setAttribute('stop-color', '#9147ff');
+      s2.setAttribute('stop-opacity', '0');
+      grad.appendChild(s1);
+      grad.appendChild(s2);
+
+      defs.appendChild(filter);
+      defs.appendChild(grad);
+      svg.appendChild(defs);
+
+      // Bars group with water filter applied inside SVG
+      var g = document.createElementNS(ns, 'g');
+      g.setAttribute('filter', 'url(#ios-water-ripple)');
+
+      var count = heroBars.length;
+      heroBars.forEach(function (bar, idx) {
+        var h = parseFloat(bar.style.height);       // e.g. 65 from "65%"
+        var delay = bar.style.animationDelay || '0s';
+        var barW = 100 / count;
+
+        var rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', (idx * barW) + '%');
+        rect.setAttribute('y', '0');
+        rect.setAttribute('width', barW + '%');
+        rect.setAttribute('height', h + '%');
+        rect.setAttribute('fill', 'url(#ios-bar-grad)');
+        // Same pulseBar animation as Hero (defined in global.css)
+        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + delay + ' infinite alternate;';
+        g.appendChild(rect);
+      });
+
+      svg.appendChild(g);
+      wrap.appendChild(svg);
+
+      // Animate turbulence via rAF — bypasses iOS GPU shader cache
+      var t = 0;
+      function tick() {
+        t += 0.0005;
+        var bf1 = (0.016 + 0.002 * Math.sin(t)).toFixed(5);
+        var bf2 = (0.046 + 0.004 * Math.sin(t)).toFixed(5);
+        var el = document.getElementById('ios-turb');
+        if (el) el.setAttribute('baseFrequency', bf1 + ' ' + bf2);
+        rafId = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    // Wait for full load so CSS (nth-child display:none) is computed
+    window.addEventListener('load', build);
+
+    // Rebuild on resize — bar count changes at CSS breakpoints
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(build, 150);
+    });
   })();
 </script>
 
