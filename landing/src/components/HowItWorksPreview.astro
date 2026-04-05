@@ -46,7 +46,7 @@
     const W = 1000; const H = 271;
     const renderBars = (bars: typeof allBars) => bars.map((b, idx) => {
       const x = Math.floor(idx * W / bars.length);
-      const w = Math.floor((idx + 1) * W / bars.length) - x + 2; // +2 overlap, no gap for displacement
+      const w = Math.floor((idx + 1) * W / bars.length) - x + 8; // +8 overlap to seal displacement gaps
       const h = Math.round(b.h / 100 * H);
       return <rect x={x} y="0" width={w} height={h} fill="url(#ios-bar-grad)"
                    style={`animation:pulseBar 2s ease-in-out ${b.delay}s infinite alternate`}/>;
@@ -60,7 +60,7 @@
             <feTurbulence id="ios-turb" type="fractalNoise" baseFrequency="0.016 0.046" numOctaves="3" result="noise"/>
             <feGaussianBlur in="noise" stdDeviation="3" result="softNoise"/>
             <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="10" xChannelSelector="R" yChannelSelector="G"/>
-            <feGaussianBlur stdDeviation="0.8"/>
+            <feGaussianBlur stdDeviation="1.5"/>
           </filter>
           <linearGradient id="ios-bar-grad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#9147ff"/>
