@@ -629,9 +629,17 @@
       var old = document.getElementById('ios-water-svg');
       if (old) old.remove();
 
-      // Read visible Hero bars — nth-child CSS already applied, just filter display:none
-      var heroBars = Array.from(document.querySelectorAll('.hero-bars > div'))
-        .filter(function (el) { return getComputedStyle(el).display !== 'none'; });
+      // Read Hero bars — apply same nth-child rules as CSS (1-based index)
+      // @media max-width:1023px → hide 5n; @media max-width:639px → also hide 3n
+      var w = window.innerWidth;
+      var allBars = Array.from(document.querySelectorAll('.hero-bars > div'));
+      if (!allBars.length) return;
+      var heroBars = allBars.filter(function (_, i) {
+        var n = i + 1; // nth-child is 1-based
+        if (w < 640 && (n % 3 === 0 || n % 5 === 0)) return false;
+        if (w < 1024 && n % 5 === 0) return false;
+        return true;
+      });
       if (!heroBars.length) return;
 
       // Hide HTML bars only after we confirmed we have data to replace them
@@ -710,11 +718,14 @@
         var rect = document.createElementNS(ns, 'rect');
         rect.setAttribute('x', (idx * barW) + '%');
         rect.setAttribute('y', '0');
-        rect.setAttribute('width', (barW + 0.3) + '%');
+        rect.setAttribute('width', (barW + 0.8) + '%');
         rect.setAttribute('height', h + '%');
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
-        // Same pulseBar animation as Hero (defined in global.css)
-        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + delay + ' infinite alternate;';
+        // Sync animation phase with Hero: subtract elapsed time so both are at same point in cycle
+        // pulseBar period = 4000ms (2s alternate = forward + back)
+        var originalDelayMs = parseFloat(delay) * 1000 || 0;
+        var syncDelay = ((originalDelayMs - performance.now()) % 4000);
+        rect.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out ' + syncDelay + 'ms infinite alternate;';
         g.appendChild(rect);
       });
 
@@ -734,8 +745,12 @@
       tick();
     }
 
-    // Wait for full load so CSS (nth-child display:none) is computed
-    window.addEventListener('load', build);
+    // DOMContentLoaded — same moment Hero animation starts, so no sync needed
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', build);
+    } else {
+      build();
+    }
 
     // Rebuild on resize — bar count changes at CSS breakpoints
     var resizeTimer;
