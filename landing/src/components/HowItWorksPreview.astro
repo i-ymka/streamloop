@@ -671,13 +671,21 @@
       var disp = document.createElementNS(ns, 'feDisplacementMap');
       disp.setAttribute('in', 'SourceGraphic');
       disp.setAttribute('in2', 'softNoise');
-      disp.setAttribute('scale', '14');
+      disp.setAttribute('scale', '10');
       disp.setAttribute('xChannelSelector', 'R');
       disp.setAttribute('yChannelSelector', 'G');
+      disp.setAttribute('result', 'displaced');
+
+      // Compensate net rightward shift caused by noise bias at left edge
+      var offset = document.createElementNS(ns, 'feOffset');
+      offset.setAttribute('in', 'displaced');
+      offset.setAttribute('dx', '-5');
+      offset.setAttribute('dy', '0');
 
       filter.appendChild(turb);
       filter.appendChild(blurNoise);
       filter.appendChild(disp);
+      filter.appendChild(offset);
 
       // Gradient: mirrored bars → purple at top, transparent at bottom
       var grad = document.createElementNS(ns, 'linearGradient');
@@ -711,7 +719,7 @@
         var rect = document.createElementNS(ns, 'rect');
         rect.setAttribute('x', (idx * barW) + '%');
         rect.setAttribute('y', '0');
-        rect.setAttribute('width', barW + '%');
+        rect.setAttribute('width', (barW + 0.3) + '%');
         rect.setAttribute('height', h + '%');
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
         // Same pulseBar animation as Hero (defined in global.css)
