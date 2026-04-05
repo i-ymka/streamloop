@@ -712,7 +712,7 @@
       // Bars group — static opacity, no animation (lamp handles all light)
       var g = document.createElementNS(ns, 'g');
       g.setAttribute('filter', 'url(#ios-water-ripple)');
-      g.setAttribute('opacity', '0.35');
+      g.style.cssText = 'animation:pulseBar 2s ease-in-out 0s infinite alternate;';
 
       var count = heroBars.length;
       var totalW = wrap.offsetWidth;
