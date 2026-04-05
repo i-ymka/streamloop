@@ -607,9 +607,8 @@
     pointer-events: none;
   }
 
-  @keyframes iosLamp {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(400%); }
+  .ios-mirror-g {
+    animation: pulseBar 2s ease-in-out 0s infinite alternate;
   }
 </style>
 
@@ -712,7 +711,7 @@
       // Bars group — static opacity, no animation (lamp handles all light)
       var g = document.createElementNS(ns, 'g');
       g.setAttribute('filter', 'url(#ios-water-ripple)');
-      g.style.cssText = 'animation:pulseBar 2s ease-in-out 0s infinite alternate;';
+      g.setAttribute('class', 'ios-mirror-g');
 
       var totalW = wrap.offsetWidth;
       var totalH = wrap.offsetHeight;
