@@ -26,21 +26,47 @@
   <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
     style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
 
-  <!-- iOS mirror SVG: static structure, JS populates rects. Static markup = WebKit captures SourceGraphic correctly. -->
-  <svg id="ios-mirror-svg" aria-hidden="true"
-    style="position:absolute;top:-15px;left:0;width:100%;height:271px;z-index:1;display:none;pointer-events:none;overflow:visible;">
-    <defs>
-      <filter id="ios-water-ripple" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
-        <feTurbulence id="ios-turb" type="fractalNoise" baseFrequency="0.016 0.046" numOctaves="3" result="noise"/>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
-      <linearGradient id="ios-bar-grad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#9147ff"/>
-        <stop offset="1" stop-color="#9147ff" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-    <g id="ios-mirror-g" filter="url(#ios-water-ripple)" class="ios-mirror-g"></g>
-  </svg>
+  <!-- iOS mirror SVG: fully static markup per breakpoint. JS only animates feTurbulence. -->
+  {(() => {
+    // Compute visible bars for each breakpoint (same nth-child rules as Hero CSS)
+    const allBars = Array.from({length: 20}, (_, i) => {
+      const n = i + 1;
+      const pos = i / 19;
+      const dist = Math.abs(pos - 0.5) * 2;
+      const h = 30 + 70 * Math.pow(dist, 1.3);
+      const delay = (i * 0.08).toFixed(2);
+      return { n, h, delay };
+    });
+    const mobileBars  = allBars.filter(b => !(b.n % 3 === 0 || b.n % 5 === 0)); // 11 bars
+    const tabletBars  = allBars.filter(b => !(b.n % 5 === 0));                   // 16 bars
+    const desktopBars = allBars;                                                   // 20 bars
+
+    const renderBars = (bars: typeof allBars) => bars.map((b, idx) => {
+      const x = (idx / bars.length * 100).toFixed(4) + '%';
+      const w = (100 / bars.length).toFixed(4) + '%';
+      return <rect x={x} y="0" width={w} height={b.h + '%'} fill="url(#ios-bar-grad)"
+                   style={`animation:pulseBar 2s ease-in-out ${b.delay}s infinite alternate`}/>;
+    });
+
+    return (
+      <svg id="ios-mirror-svg" aria-hidden="true"
+        style="position:absolute;top:-15px;left:0;width:100%;height:271px;z-index:1;display:none;pointer-events:none;overflow:visible;">
+        <defs>
+          <filter id="ios-water-ripple" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+            <feTurbulence id="ios-turb" type="fractalNoise" baseFrequency="0.016 0.046" numOctaves="3" result="noise"/>
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <linearGradient id="ios-bar-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#9147ff"/>
+            <stop offset="1" stop-color="#9147ff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g id="ios-g-mobile"   filter="url(#ios-water-ripple)">{renderBars(mobileBars)}</g>
+        <g id="ios-g-tablet"   filter="url(#ios-water-ripple)">{renderBars(tabletBars)}</g>
+        <g id="ios-g-desktop"  filter="url(#ios-water-ripple)">{renderBars(desktopBars)}</g>
+      </svg>
+    );
+  })()}
 
   <!-- Mirror bars with edge bleed for displacement -->
   <div id="sl-bars-wrap" class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
@@ -623,9 +649,10 @@
     pointer-events: none;
   }
 
-  :global(.ios-mirror-g) {
-    animation: pulseBar 2s ease-in-out 0s infinite alternate;
-  }
+  /* iOS mirror: show correct bar group per breakpoint */
+  :global(#ios-g-tablet),  :global(#ios-g-desktop) { display: none; }
+  @media (min-width: 640px)  { :global(#ios-g-mobile),  :global(#ios-g-desktop)  { display: none; } :global(#ios-g-tablet)  { display: block; } }
+  @media (min-width: 1024px) { :global(#ios-g-mobile),  :global(#ios-g-tablet)   { display: none; } :global(#ios-g-desktop) { display: block; } }
 </style>
 
 <script>
@@ -641,54 +668,16 @@
       if (tickTimer) { clearTimeout(tickTimer); tickTimer = null; }
 
       var svg = document.getElementById('ios-mirror-svg');
-      var g   = document.getElementById('ios-mirror-g');
-      if (!svg || !g) return;
-
-      // Read Hero bars with same nth-child rules as CSS
-      var vw = window.innerWidth;
-      var allBars = Array.from(document.querySelectorAll('.hero-bars > div'));
-      if (!allBars.length) return;
-      var heroBars = allBars.filter(function (_, i) {
-        var n = i + 1;
-        if (vw < 640 && (n % 3 === 0 || n % 5 === 0)) return false;
-        if (vw < 1024 && n % 5 === 0) return false;
-        return true;
-      });
-      if (!heroBars.length) return;
+      if (!svg) return;
 
       // Hide HTML bars (CSS filter:url broken on iOS)
       var htmlBars = document.getElementById('sl-bars-html');
       if (htmlBars) htmlBars.style.visibility = 'hidden';
 
-      // Show static iOS SVG
+      // Show static iOS SVG (bars and filter are in static markup)
       svg.style.display = 'block';
 
-      var totalW = svg.offsetWidth;
-      var totalH = svg.offsetHeight;
-      if (!totalW || !totalH) { tickTimer = setTimeout(build, 100); return; }
-
-      svg.setAttribute('width', totalW);
-      svg.setAttribute('height', totalH);
-
-      // Remove previous rects
-      while (g.firstChild) g.removeChild(g.firstChild);
-
-      var count = heroBars.length;
-      heroBars.forEach(function (bar, idx) {
-        var hPct = parseFloat(bar.style.height);
-        var x = Math.floor(idx * totalW / count);
-        var w = Math.floor((idx + 1) * totalW / count) - x;
-        var h = Math.round(hPct / 100 * totalH);
-        var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rect.setAttribute('x', x);
-        rect.setAttribute('y', 0);
-        rect.setAttribute('width', w);
-        rect.setAttribute('height', h);
-        rect.setAttribute('fill', 'url(#ios-bar-grad)');
-        g.appendChild(rect);
-      });
-
-      // Animate turbulence via setTimeout (bypasses iOS GPU shader cache)
+      // Animate turbulence via setTimeout — bypasses iOS GPU shader cache
       var t = 0;
       function tick() {
         t += 0.008;
