@@ -658,7 +658,7 @@
 
       var turb = document.createElementNS(ns, 'feTurbulence');
       turb.id = 'ios-turb';
-      turb.setAttribute('type', 'turbulence');
+      turb.setAttribute('type', 'fractalNoise');
       turb.setAttribute('baseFrequency', '0.016 0.046');
       turb.setAttribute('numOctaves', '3');
       turb.setAttribute('result', 'noise');
@@ -674,18 +674,9 @@
       disp.setAttribute('scale', '10');
       disp.setAttribute('xChannelSelector', 'R');
       disp.setAttribute('yChannelSelector', 'G');
-      disp.setAttribute('result', 'displaced');
-
-      // Compensate net rightward shift caused by noise bias at left edge
-      var offset = document.createElementNS(ns, 'feOffset');
-      offset.setAttribute('in', 'displaced');
-      offset.setAttribute('dx', '-5');
-      offset.setAttribute('dy', '0');
-
       filter.appendChild(turb);
       filter.appendChild(blurNoise);
       filter.appendChild(disp);
-      filter.appendChild(offset);
 
       // Gradient: mirrored bars → purple at top, transparent at bottom
       var grad = document.createElementNS(ns, 'linearGradient');
