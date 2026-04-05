@@ -666,11 +666,7 @@
     var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     if (!isIOS) return;
 
-    var tickTimer;
-
     function build() {
-      if (tickTimer) { clearTimeout(tickTimer); tickTimer = null; }
-
       var svg = document.getElementById('ios-mirror-svg');
       if (!svg) return;
 
@@ -678,20 +674,9 @@
       var htmlBars = document.getElementById('sl-bars-html');
       if (htmlBars) htmlBars.style.visibility = 'hidden';
 
-      // Show static iOS SVG (visibility:hidden preserves animation timing from page load)
+      // Show static iOS SVG — no JS animation loop, static turbulence only
+      // setTimeout on feTurbulence caused CSS animation lag and desync on iPhone
       svg.style.visibility = 'visible';
-
-      // Animate turbulence via setTimeout — bypasses iOS GPU shader cache
-      var t = 0;
-      function tick() {
-        t += 0.008;
-        var el = document.getElementById('ios-turb');
-        if (el) el.setAttribute('baseFrequency',
-          (0.016 + 0.002 * Math.sin(t)).toFixed(5) + ' ' +
-          (0.046 + 0.004 * Math.sin(t)).toFixed(5));
-        tickTimer = setTimeout(tick, 100);
-      }
-      tick();
     }
 
     if (document.readyState === 'loading') {
