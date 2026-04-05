@@ -606,6 +606,11 @@
     background: rgba(8, 6, 20, 0.6);
     pointer-events: none;
   }
+
+  @keyframes iosLamp {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
 </style>
 
 <script>
@@ -645,6 +650,12 @@
       // Hide HTML bars only after we confirmed we have data to replace them
       var htmlBars = document.getElementById('sl-bars-html');
       if (htmlBars) htmlBars.style.visibility = 'hidden';
+
+      // Freeze Hero bar animations — lamp will be the only light source
+      allBars.forEach(function (bar) {
+        bar.style.animation = 'none';
+        bar.style.opacity = '0.35';
+      });
 
 
       var ns = 'http://www.w3.org/2000/svg';
@@ -709,10 +720,10 @@
       defs.appendChild(grad);
       svg.appendChild(defs);
 
-      // Bars group with water filter + single pulseBar animation = one light source for whole mirror
+      // Bars group — static opacity, no animation (lamp handles all light)
       var g = document.createElementNS(ns, 'g');
       g.setAttribute('filter', 'url(#ios-water-ripple)');
-      g.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out 0s infinite alternate;';
+      g.setAttribute('opacity', '0.35');
 
       var count = heroBars.length;
       var rects = [];
@@ -733,7 +744,27 @@
       svg.appendChild(g);
       wrap.appendChild(svg);
 
-      // setTimeout tick: only turbulence animation — light is pure CSS on <g>, no JS needed
+      // Lamp: single light source sweeping left→right across both Hero and mirror
+      // Positioned to cover Hero bars (above) and mirror bars (below) as one object
+      var oldLamp = document.getElementById('ios-lamp');
+      if (oldLamp) oldLamp.remove();
+      var lamp = document.createElement('div');
+      lamp.id = 'ios-lamp';
+      lamp.style.cssText = [
+        'position:fixed',
+        'top:0',
+        'left:0',
+        'width:30%',
+        'height:100vh',
+        'pointer-events:none',
+        'z-index:2',
+        'background:linear-gradient(to right,transparent,rgba(145,71,255,0.25),transparent)',
+        'animation:iosLamp 4s ease-in-out infinite',
+        'will-change:transform',
+      ].join(';');
+      document.body.appendChild(lamp);
+
+      // setTimeout tick: only turbulence animation
       var t = 0;
       function tick() {
         t += 0.008;
