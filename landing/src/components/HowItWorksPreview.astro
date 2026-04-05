@@ -651,11 +651,6 @@
       var htmlBars = document.getElementById('sl-bars-html');
       if (htmlBars) htmlBars.style.visibility = 'hidden';
 
-      // Freeze Hero bar animations — lamp will be the only light source
-      allBars.forEach(function (bar) {
-        bar.style.animation = 'none';
-        bar.style.opacity = '0.35';
-      });
 
 
       var ns = 'http://www.w3.org/2000/svg';
@@ -685,19 +680,13 @@
       turb.setAttribute('numOctaves', '3');
       turb.setAttribute('result', 'noise');
 
-      var blurNoise = document.createElementNS(ns, 'feGaussianBlur');
-      blurNoise.setAttribute('in', 'noise');
-      blurNoise.setAttribute('stdDeviation', '3');
-      blurNoise.setAttribute('result', 'softNoise');
-
       var disp = document.createElementNS(ns, 'feDisplacementMap');
       disp.setAttribute('in', 'SourceGraphic');
-      disp.setAttribute('in2', 'softNoise');
-      disp.setAttribute('scale', '18');
+      disp.setAttribute('in2', 'noise');
+      disp.setAttribute('scale', '60');
       disp.setAttribute('xChannelSelector', 'R');
       disp.setAttribute('yChannelSelector', 'G');
       filter.appendChild(turb);
-      filter.appendChild(blurNoise);
       filter.appendChild(disp);
 
       // Gradient: mirrored bars → purple at top, transparent at bottom
@@ -744,25 +733,6 @@
       svg.appendChild(g);
       wrap.appendChild(svg);
 
-      // Lamp: single light source sweeping left→right across both Hero and mirror
-      // Positioned to cover Hero bars (above) and mirror bars (below) as one object
-      var oldLamp = document.getElementById('ios-lamp');
-      if (oldLamp) oldLamp.remove();
-      var lamp = document.createElement('div');
-      lamp.id = 'ios-lamp';
-      lamp.style.cssText = [
-        'position:fixed',
-        'top:0',
-        'left:0',
-        'width:30%',
-        'height:100vh',
-        'pointer-events:none',
-        'z-index:2',
-        'background:linear-gradient(to right,transparent,rgba(145,71,255,0.25),transparent)',
-        'animation:iosLamp 4s ease-in-out infinite',
-        'will-change:transform',
-      ].join(';');
-      document.body.appendChild(lamp);
 
       // setTimeout tick: only turbulence animation
       var t = 0;
