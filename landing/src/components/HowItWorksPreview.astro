@@ -709,9 +709,10 @@
       defs.appendChild(grad);
       svg.appendChild(defs);
 
-      // Bars group with water filter applied inside SVG
+      // Bars group with water filter + single pulseBar animation = one light source for whole mirror
       var g = document.createElementNS(ns, 'g');
       g.setAttribute('filter', 'url(#ios-water-ripple)');
+      g.style.cssText = 'opacity:0.35;animation:pulseBar 2s ease-in-out 0s infinite alternate;';
 
       var count = heroBars.length;
       var rects = [];
@@ -726,16 +727,13 @@
         rect.setAttribute('width', w);
         rect.setAttribute('height', h);
         rect.setAttribute('fill', 'url(#ios-bar-grad)');
-        rect.setAttribute('opacity', '0.35');
         g.appendChild(rect);
-        rects.push({ rect: rect, heroBar: bar });
       });
 
       svg.appendChild(g);
       wrap.appendChild(svg);
 
-      // setTimeout tick: update turbulence (water) + mirror Hero bar opacity (light sync)
-      // Opacity is read directly from Hero bars — physically cannot desync
+      // setTimeout tick: only turbulence animation — light is pure CSS on <g>, no JS needed
       var t = 0;
       function tick() {
         t += 0.008;
@@ -743,14 +741,7 @@
         var bf2 = (0.046 + 0.004 * Math.sin(t)).toFixed(5);
         var turbEl = document.getElementById('ios-turb');
         if (turbEl) turbEl.setAttribute('baseFrequency', bf1 + ' ' + bf2);
-
-        // Mirror Hero bar opacity — single source of truth
-        rects.forEach(function (item) {
-          var opacity = getComputedStyle(item.heroBar).opacity;
-          item.rect.setAttribute('opacity', opacity);
-        });
-
-        rafId = setTimeout(tick, 50); // 20fps — smooth enough for 2s pulse, no lag
+        rafId = setTimeout(tick, 100);
       }
       tick();
     }
