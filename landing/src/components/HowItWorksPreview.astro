@@ -691,9 +691,6 @@
 
       svg.style.visibility = 'visible';
 
-      // Fix sub-pixel gaps in Hero CSS flex bars (390px / 11 bars = 35.45px → fractional)
-      var heroBarsEl = document.querySelector('.hero-bars');
-      if (heroBarsEl) heroBarsEl.style.imageRendering = 'pixelated';
     }
 
     if (document.readyState === 'loading') {
