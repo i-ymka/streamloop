@@ -658,9 +658,7 @@
       svg.id = 'ios-water-svg';
       svg.setAttribute('width', '100%');
       svg.setAttribute('height', '100%');
-      svg.setAttribute('viewBox', '0 0 1000 100');
-      svg.setAttribute('preserveAspectRatio', 'none');
-      svg.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;';
+      svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
 
       var defs = document.createElementNS(ns, 'defs');
 
@@ -683,7 +681,7 @@
       var disp = document.createElementNS(ns, 'feDisplacementMap');
       disp.setAttribute('in', 'SourceGraphic');
       disp.setAttribute('in2', 'noise');
-      disp.setAttribute('scale', '60');
+      disp.setAttribute('scale', '14');
       disp.setAttribute('xChannelSelector', 'R');
       disp.setAttribute('yChannelSelector', 'G');
       filter.appendChild(turb);
@@ -694,7 +692,9 @@
       grad.id = 'ios-bar-grad';
       grad.setAttribute('x1', '0'); grad.setAttribute('y1', '0');
       grad.setAttribute('x2', '0'); grad.setAttribute('y2', '1');
-      grad.setAttribute('gradientUnits', 'objectBoundingBox');
+      grad.setAttribute('gradientUnits', 'userSpaceOnUse');
+      grad.setAttribute('y1', '0');
+      grad.setAttribute('y2', String(totalH));
       var s1 = document.createElementNS(ns, 'stop');
       s1.setAttribute('offset', '0');
       s1.setAttribute('stop-color', '#9147ff');
@@ -715,11 +715,14 @@
       g.setAttribute('opacity', '0.35');
 
       var count = heroBars.length;
+      var totalW = wrap.offsetWidth;
+      var totalH = wrap.offsetHeight;
       var rects = [];
       heroBars.forEach(function (bar, idx) {
-        var h = parseFloat(bar.style.height);
-        var x = Math.floor(idx * 1000 / count);
-        var w = Math.floor((idx + 1) * 1000 / count) - x;
+        var hPct = parseFloat(bar.style.height);
+        var x = Math.floor(idx * totalW / count);
+        var w = Math.floor((idx + 1) * totalW / count) - x;
+        var h = Math.round(hPct / 100 * totalH);
 
         var rect = document.createElementNS(ns, 'rect');
         rect.setAttribute('x', x);
