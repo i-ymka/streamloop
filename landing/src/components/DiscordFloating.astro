@@ -1,0 +1,234 @@
+<canvas id="dc-canvas" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:all;cursor:default;"></canvas>
+
+<script>
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const canvas = document.getElementById('dc-canvas') as HTMLCanvasElement;
+if (!canvas) throw new Error('no canvas');
+
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+camera.position.z = 14;
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+const dir1 = new THREE.DirectionalLight(0xffffff, 1.4);
+dir1.position.set(3, 4, 5);
+scene.add(dir1);
+const dir2 = new THREE.DirectionalLight(0x9147ff, 0.6);
+dir2.position.set(-4, -2, 3);
+scene.add(dir2);
+
+function getCount() {
+  const w = window.innerWidth;
+  if (w < 640) return 4;
+  if (w < 1024) return 8;
+  return 13;
+}
+
+function rand(a: number, b: number) { return a + Math.random() * (b - a); }
+function randDir() {
+  const a = Math.random() * Math.PI * 2;
+  return { x: Math.cos(a), y: Math.sin(a) };
+}
+
+type Instance = {
+  obj: THREE.Object3D;
+  px: number; py: number; pz: number;
+  vx: number; vy: number;
+  angVel: number;
+  axis: THREE.Vector3;
+  scale: number;
+  mass: number;
+  r: number; // collision radius in world units
+};
+
+const instances: Instance[] = [];
+const SPEED = 0.002;
+
+// Face half-size of the logo — set from bounding box after load
+// This is the radius when facing the camera (maximum projected size)
+let faceR = 1.0;
+
+function makeInstance(template: THREE.Object3D, index: number, total: number): Instance {
+  const obj = template.clone(true);
+  scene.add(obj);
+
+  const angle = (index / total) * Math.PI * 2 + index * 0.9;
+  const r = 2.8 + (index % 4) * 1.4;
+  const px = Math.cos(angle) * r * 1.6;
+  const py = Math.sin(angle) * r * 0.75;
+  const pz = (index % 5) * -0.5;
+
+  obj.position.set(px, py, pz);
+  obj.rotation.set(rand(-0.4, 0.4), rand(0, Math.PI * 2), rand(-0.2, 0.2));
+  const s = 0.5 + (index % 4) * 0.11;
+  obj.scale.setScalar(s);
+
+  const dir = randDir();
+  const speed = rand(0.6, 1.0) * SPEED;
+  const axis = new THREE.Vector3(rand(-0.2, 0.2), 1, rand(-0.1, 0.1)).normalize();
+
+  return {
+    obj, px, py, pz,
+    scale: s,
+    mass: s * s,
+    r: faceR * s,
+    vx: dir.x * speed,
+    vy: dir.y * speed,
+    angVel: rand(0.002, 0.006) * (Math.random() > 0.5 ? 1 : -1),
+    axis,
+  };
+}
+
+function canvasToWorld(cx: number, cy: number) {
+  const rect = canvas.getBoundingClientRect();
+  const ndcX =  ((cx - rect.left) / rect.width)  * 2 - 1;
+  const ndcY = -((cy - rect.top)  / rect.height)  * 2 + 1;
+  const vec = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(camera);
+  const d = vec.sub(camera.position).normalize();
+  const t = -camera.position.z / d.z;
+  return { x: camera.position.x + d.x * t, y: camera.position.y + d.y * t };
+}
+
+canvas.addEventListener('click', (e) => {
+  const w = canvasToWorld(e.clientX, e.clientY);
+  const PUSH_RADIUS = 2.5;
+  const PUSH_FORCE  = 0.04;
+  instances.forEach((inst) => {
+    const dx = inst.px - w.x;
+    const dy = inst.py - w.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < PUSH_RADIUS && dist > 0.01) {
+      const f = (1 - dist / PUSH_RADIUS) * PUSH_FORCE;
+      inst.vx += (dx / dist) * f;
+      inst.vy += (dy / dist) * f;
+      inst.angVel += rand(-0.015, 0.015);
+    }
+  });
+});
+
+function resize() {
+  const rect = canvas.parentElement!.getBoundingClientRect();
+  renderer.setSize(rect.width, rect.height, false);
+  camera.aspect = rect.width / rect.height;
+  camera.updateProjectionMatrix();
+}
+
+let template: THREE.Object3D;
+let currentCount = 0;
+
+function rebuild() {
+  instances.forEach(({ obj }) => scene.remove(obj));
+  instances.length = 0;
+  const count = getCount();
+  currentCount = count;
+  for (let i = 0; i < count; i++) instances.push(makeInstance(template, i, count));
+}
+
+const loader = new GLTFLoader();
+loader.load('/discord.glb', (gltf) => {
+  template = gltf.scene;
+
+  const box = new THREE.Box3().setFromObject(template);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  template.position.sub(center);
+
+  // Measure face half-size: use the smaller of X and Y (the logo face, not depth)
+  const lb = new THREE.Box3().setFromObject(template);
+  const size = new THREE.Vector3();
+  lb.getSize(size);
+  // Logo face radius = half of the larger face dimension
+  faceR = Math.max(size.x, size.y) / 2;
+
+  resize();
+  rebuild();
+
+  const BX = 9, BY = 5;
+  const MAX_SPEED = 0.08;
+  let last = performance.now();
+
+  function animate(now: number) {
+    requestAnimationFrame(animate);
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+
+    // Collision — use current Y-rotation to compute effective XY radius
+    // When facing camera (ry≈0): full width. When sideways (ry≈90°): just depth.
+    for (let i = 0; i < instances.length; i++) {
+      for (let j = i + 1; j < instances.length; j++) {
+        const a = instances[i];
+        const b = instances[j];
+
+        const dx = b.px - a.px;
+        const dy = b.py - a.py;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 0.001) continue;
+
+        // Effective radius accounts for current Y rotation
+        const ra = a.r * Math.abs(Math.cos(a.obj.rotation.y)) + a.r * 0.1;
+        const rb = b.r * Math.abs(Math.cos(b.obj.rotation.y)) + b.r * 0.1;
+        const minDist = ra + rb;
+
+        if (dist >= minDist) continue;
+
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        const dvn = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
+        if (dvn > 0) {
+          const e = 0.75;
+          const invMassSum = 1/a.mass + 1/b.mass;
+          const j = -(1 + e) * dvn / invMassSum;
+          a.vx += (j / a.mass) * nx; a.vy += (j / a.mass) * ny;
+          b.vx -= (j / b.mass) * nx; b.vy -= (j / b.mass) * ny;
+          a.angVel += rand(-0.006, 0.006) / a.mass;
+          b.angVel += rand(-0.006, 0.006) / b.mass;
+        }
+
+        const corr = (minDist - dist);
+        const invMassSum = 1/a.mass + 1/b.mass;
+        a.px -= nx * corr * (1/a.mass) / invMassSum;
+        a.py -= ny * corr * (1/a.mass) / invMassSum;
+        b.px += nx * corr * (1/b.mass) / invMassSum;
+        b.py += ny * corr * (1/b.mass) / invMassSum;
+      }
+    }
+
+    instances.forEach((inst) => {
+      const spd = Math.sqrt(inst.vx*inst.vx + inst.vy*inst.vy);
+      if (spd > MAX_SPEED) { inst.vx = inst.vx/spd*MAX_SPEED; inst.vy = inst.vy/spd*MAX_SPEED; }
+
+      inst.px += inst.vx * 60 * dt;
+      inst.py += inst.vy * 60 * dt;
+
+      if (inst.px >  BX && inst.vx > 0) { inst.vx = -Math.abs(inst.vx)*rand(0.85,0.98); inst.vy += rand(-0.001,0.001); }
+      if (inst.px < -BX && inst.vx < 0) { inst.vx =  Math.abs(inst.vx)*rand(0.85,0.98); inst.vy += rand(-0.001,0.001); }
+      if (inst.py >  BY && inst.vy > 0) { inst.vy = -Math.abs(inst.vy)*rand(0.85,0.98); inst.vx += rand(-0.001,0.001); }
+      if (inst.py < -BY && inst.vy < 0) { inst.vy =  Math.abs(inst.vy)*rand(0.85,0.98); inst.vx += rand(-0.001,0.001); }
+
+      inst.obj.position.x = inst.px;
+      inst.obj.position.y = inst.py;
+      inst.obj.position.z = inst.pz;
+      inst.obj.rotateOnWorldAxis(inst.axis, inst.angVel * dt * 60);
+    });
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(animate);
+
+  let resizeTimer: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      resize();
+      if (getCount() !== currentCount) rebuild();
+    }, 150);
+  });
+});
+</script>
