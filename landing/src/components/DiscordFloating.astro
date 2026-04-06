@@ -54,14 +54,15 @@ const SPEED = 0.002;
 // This is the radius when facing the camera (maximum projected size)
 let faceR = 1.0;
 
-function makeInstance(template: THREE.Object3D, index: number, total: number): Instance {
+function makeInstance(template: THREE.Object3D, index: number, total: number, BX: number, BY: number): Instance {
   const obj = template.clone(true);
   scene.add(obj);
 
   const angle = (index / total) * Math.PI * 2 + index * 0.9;
-  const r = 2.8 + (index % 4) * 1.4;
-  const px = Math.cos(angle) * r * 1.6;
-  const py = Math.sin(angle) * r * 0.75;
+  const r = 0.5 + (index % 4) * 0.11; // just scale placeholder, used below
+  const margin = faceR * (0.5 + (index % 4) * 0.11); // logo radius at this scale
+  const px = Math.cos(angle) * Math.min(Math.abs(Math.cos(angle)) * BX, BX - margin) * 0.9;
+  const py = Math.sin(angle) * Math.min(Math.abs(Math.sin(angle)) * BY, BY - margin) * 0.9;
   const pz = (index % 5) * -0.5;
 
   obj.position.set(px, py, pz);
@@ -127,7 +128,8 @@ function rebuild() {
   instances.length = 0;
   const count = getCount();
   currentCount = count;
-  for (let i = 0; i < count; i++) instances.push(makeInstance(template, i, count));
+  const { BX: bx0, BY: by0 } = getFrustum();
+  for (let i = 0; i < count; i++) instances.push(makeInstance(template, i, count, bx0, by0));
 }
 
 const loader = new GLTFLoader();
@@ -214,10 +216,12 @@ loader.load('/discord.glb', (gltf) => {
       inst.px += inst.vx * 60 * dt;
       inst.py += inst.vy * 60 * dt;
 
-      if (inst.px >  BX && inst.vx > 0) { inst.vx = -Math.abs(inst.vx)*rand(0.85,0.98); inst.vy += rand(-0.001,0.001); }
-      if (inst.px < -BX && inst.vx < 0) { inst.vx =  Math.abs(inst.vx)*rand(0.85,0.98); inst.vy += rand(-0.001,0.001); }
-      if (inst.py >  BY && inst.vy > 0) { inst.vy = -Math.abs(inst.vy)*rand(0.85,0.98); inst.vx += rand(-0.001,0.001); }
-      if (inst.py < -BY && inst.vy < 0) { inst.vy =  Math.abs(inst.vy)*rand(0.85,0.98); inst.vx += rand(-0.001,0.001); }
+      const bx = BX - inst.r;
+      const by = BY - inst.r;
+      if (inst.px >  bx && inst.vx > 0) { inst.vx = -Math.abs(inst.vx)*rand(0.85,0.98); inst.vy += rand(-0.001,0.001); inst.px = bx; }
+      if (inst.px < -bx && inst.vx < 0) { inst.vx =  Math.abs(inst.vx)*rand(0.85,0.98); inst.vy += rand(-0.001,0.001); inst.px = -bx; }
+      if (inst.py >  by && inst.vy > 0) { inst.vy = -Math.abs(inst.vy)*rand(0.85,0.98); inst.vx += rand(-0.001,0.001); inst.py = by; }
+      if (inst.py < -by && inst.vy < 0) { inst.vy =  Math.abs(inst.vy)*rand(0.85,0.98); inst.vx += rand(-0.001,0.001); inst.py = -by; }
 
       inst.obj.position.x = inst.px;
       inst.obj.position.y = inst.py;
