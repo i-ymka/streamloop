@@ -149,7 +149,14 @@ loader.load('/discord.glb', (gltf) => {
   resize();
   rebuild();
 
-  const BX = 9, BY = 5;
+  // World-space half-width/height at z=0 from camera frustum
+  function getFrustum() {
+    const halfFov = (camera.fov * Math.PI / 180) / 2;
+    const BY = Math.tan(halfFov) * camera.position.z;
+    const BX = BY * camera.aspect;
+    return { BX, BY };
+  }
+  let { BX, BY } = getFrustum();
   const MAX_SPEED = 0.08;
   let last = performance.now();
 
@@ -227,6 +234,7 @@ loader.load('/discord.glb', (gltf) => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       resize();
+      ({ BX, BY } = getFrustum());
       if (getCount() !== currentCount) rebuild();
     }, 150);
   });
