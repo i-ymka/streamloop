@@ -3,6 +3,23 @@ import DiscordFloating from './DiscordFloating.astro';
 const DISCORD_URL = 'https://discord.gg/d5UsBr9y';
 ---
 
+<!-- Liquid glass SVG filter -->
+<svg style="display:none" aria-hidden="true">
+  <filter id="glass-distortion" x="-5%" y="-5%" width="110%" height="110%" filterUnits="objectBoundingBox">
+    <feTurbulence type="fractalNoise" baseFrequency="0.001 0.005" numOctaves="1" seed="17" result="turbulence"/>
+    <feComponentTransfer in="turbulence" result="mapped">
+      <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
+      <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
+      <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
+    </feComponentTransfer>
+    <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
+    <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lightingColor="white" result="specLight">
+      <fePointLight x="-200" y="-200" z="300"/>
+    </feSpecularLighting>
+    <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage"/>
+    <feDisplacementMap in="SourceGraphic" in2="softMap" scale="120" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
 
 <section id="discord" class="relative py-16 sm:py-32 px-6">
 
@@ -18,10 +35,17 @@ const DISCORD_URL = 'https://discord.gg/d5UsBr9y';
 
   <div class="max-w-2xl mx-auto" style="position:relative;">
     <div class="rounded-2xl p-8 sm:p-12 text-center relative overflow-hidden"
-      style="background:rgba(145,71,255,0.07);border:1px solid rgba(145,71,255,0.22);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
+      style="box-shadow:0 6px 6px rgba(0,0,0,0.3),0 0 40px rgba(0,0,0,0.2);">
+
+      <!-- Layer 1: liquid glass distortion + blur -->
+      <div class="absolute inset-0 z-0 rounded-2xl overflow-hidden" style="backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);filter:url(#glass-distortion);isolation:isolate;"></div>
+      <!-- Layer 2: purple tint -->
+      <div class="absolute inset-0 z-10 rounded-2xl" style="background:rgba(145,71,255,0.12);"></div>
+      <!-- Layer 3: inner highlight (top edge = light reflection) -->
+      <div class="absolute inset-0 z-20 rounded-2xl" style="box-shadow:inset 2px 2px 1px 0 rgba(255,255,255,0.18),inset -1px -1px 1px 1px rgba(145,71,255,0.2);"></div>
 
       <!-- Inner glow -->
-      <div class="absolute inset-0 pointer-events-none"
+      <div class="absolute inset-0 pointer-events-none z-20"
         style="background:radial-gradient(ellipse 70% 50% at 50% 110%,rgba(145,71,255,0.15),transparent);">
       </div>
 
