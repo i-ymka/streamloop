@@ -615,8 +615,63 @@
   (function () {
     var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
     if (!isIOS) return;
-    var el = document.getElementById('sl-bars-html');
-    if (el) el.style.filter = 'none';
+
+    // 1. Remove broken CSS filter
+    var mirror = document.getElementById('sl-bars-html');
+    if (mirror) mirror.style.filter = 'none';
+
+    // 2. Glass card around phone — on HTML wrapper, not SVG frame
+    var phoneWrap = document.querySelector('.sl-phone-wrap');
+    if (phoneWrap) {
+      phoneWrap.style.cssText += [
+        'background:rgba(145,71,255,0.06)',
+        'backdrop-filter:blur(24px) saturate(160%)',
+        '-webkit-backdrop-filter:blur(24px) saturate(160%)',
+        'border:1px solid rgba(145,71,255,0.15)',
+        'border-radius:40px',
+        'padding:24px 16px',
+      ].join(';');
+    }
+
+    // 3. Gyroscope parallax on mirror bars — tilt phone, mirror shifts like water
+    if (!window.DeviceOrientationEvent) return;
+
+    function handleOrientation(e) {
+      var gamma = e.gamma || 0; // left-right tilt: -90 to 90
+      var beta  = e.beta  || 0; // front-back tilt: -180 to 180
+
+      // Clamp to reasonable range
+      gamma = Math.max(-30, Math.min(30, gamma));
+      beta  = Math.max(-30, Math.min(30, beta - 30)); // 30° is natural phone hold angle
+
+      var tx = gamma * 0.4; // horizontal shift in px
+      var ry = gamma * 0.3; // subtle rotateY
+      var rx = beta  * 0.15; // subtle rotateX
+
+      if (mirror) {
+        mirror.style.transform = [
+          'translateX(' + tx + 'px)',
+          'rotateY(' + ry + 'deg)',
+          'rotateX(' + rx + 'deg)',
+        ].join(' ');
+      }
+    }
+
+    // iOS 13+ requires permission for DeviceOrientation
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // Request on first user interaction
+      document.addEventListener('touchstart', function askPermission() {
+        DeviceOrientationEvent.requestPermission()
+          .then(function(state) {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+            }
+          });
+        document.removeEventListener('touchstart', askPermission);
+      }, { once: true });
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
   })();
 </script>
 
