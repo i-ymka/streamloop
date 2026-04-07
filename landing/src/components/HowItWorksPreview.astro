@@ -620,41 +620,39 @@
     var mirror = document.getElementById('sl-bars-html');
     if (mirror) mirror.style.filter = 'none';
 
-    // 2. Glass card around phone — on HTML wrapper, not SVG frame
+    // 2. Discord-style glass on phone wrap — dark frosted, no border
     var phoneWrap = document.querySelector('.sl-phone-wrap');
     if (phoneWrap) {
       phoneWrap.style.cssText += [
-        'background:rgba(145,71,255,0.06)',
-        'backdrop-filter:blur(24px) saturate(160%)',
-        '-webkit-backdrop-filter:blur(24px) saturate(160%)',
-        'border:1px solid rgba(145,71,255,0.15)',
-        'border-radius:40px',
-        'padding:24px 16px',
+        'background:rgba(10,8,24,0.55)',
+        '-webkit-backdrop-filter:blur(20px) saturate(150%)',
+        'backdrop-filter:blur(20px) saturate(150%)',
+        'border-radius:32px',
+        'padding:20px 12px',
       ].join(';');
     }
 
-    // 3. Gyroscope parallax on mirror bars — tilt phone, mirror shifts like water
+    // 3. Gyroscope 3D parallax — text/phone float above background
+    // Foreground elements move more = depth illusion even on solid background
     if (!window.DeviceOrientationEvent) return;
 
+    var section = document.getElementById('how-it-works');
+    var phoneEl = document.querySelector('.sl-phone-wrap');
+    var header  = document.querySelector('.sl-header');
+
     function handleOrientation(e) {
-      var gamma = e.gamma || 0; // left-right tilt: -90 to 90
-      var beta  = e.beta  || 0; // front-back tilt: -180 to 180
+      var gamma = e.gamma || 0; // left-right: -90 to 90
+      var beta  = (e.beta || 0) - 30; // normalise: 30° = natural hold
 
-      // Clamp to reasonable range
-      gamma = Math.max(-30, Math.min(30, gamma));
-      beta  = Math.max(-30, Math.min(30, beta - 30)); // 30° is natural phone hold angle
+      gamma = Math.max(-25, Math.min(25, gamma));
+      beta  = Math.max(-20, Math.min(20, beta));
 
-      var tx = gamma * 0.4; // horizontal shift in px
-      var ry = gamma * 0.3; // subtle rotateY
-      var rx = beta  * 0.15; // subtle rotateX
-
-      if (mirror) {
-        mirror.style.transform = [
-          'translateX(' + tx + 'px)',
-          'rotateY(' + ry + 'deg)',
-          'rotateX(' + rx + 'deg)',
-        ].join(' ');
-      }
+      // Phone (foreground) moves most
+      if (phoneEl) phoneEl.style.transform = 'translateX(' + (gamma * 0.6) + 'px) translateY(' + (beta * 0.3) + 'px)';
+      // Header text moves less
+      if (header)  header.style.transform  = 'translateX(' + (gamma * 0.25) + 'px) translateY(' + (beta * 0.12) + 'px)';
+      // Mirror (background) barely moves
+      if (mirror)  mirror.style.transform  = 'translateX(' + (gamma * 0.08) + 'px)';
     }
 
     // iOS 13+ requires permission for DeviceOrientation
