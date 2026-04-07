@@ -65,3 +65,39 @@ body {
   animation: marquee 20s linear infinite;
   width: max-content;
 }
+
+/* ── iOS-exclusive enhancements ─────────────────────────────────────────────
+   Safe features only: glassmorphism, spring timing, frosted cards.
+   NO scroll-driven animations (breaks Hero scroll).
+   NO scaleY in pulseBar (causes piano effect).
+   ─────────────────────────────────────────────────────────────────────────── */
+@supports (-webkit-touch-callout: none) {
+
+  /* Spring timing on pulseBar — Safari 17.2+ linear() easing, opacity only */
+  .hero-bars > div,
+  .sl-mirror-bars > div {
+    animation-timing-function: linear(
+      0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%,
+      0.849 31.5%, 0.937 38.1%, 0.991 45.7%, 1.001 50.1%, 1
+    );
+  }
+
+  /* Glassmorphism on phone mockup — GPU-free on iOS Metal */
+  .sl-phone-frame {
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    box-shadow:
+      0 0 0 1px rgba(145, 71, 255, 0.18),
+      0 24px 80px rgba(145, 71, 255, 0.22);
+  }
+
+  /* Frosted glass on step cards */
+  .sl-step {
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    backdrop-filter: blur(8px) saturate(140%);
+  }
+  .sl-step--active {
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    backdrop-filter: blur(12px) saturate(160%);
+  }
+}
