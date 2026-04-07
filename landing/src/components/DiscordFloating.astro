@@ -12,7 +12,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setClearColor(0x000000, 0);
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+// OrthographicCamera — no perspective distortion, all logos same size regardless of position
+const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
 camera.position.z = 14;
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.7));
@@ -90,10 +91,9 @@ function canvasToWorld(cx: number, cy: number) {
   const rect = canvas.getBoundingClientRect();
   const ndcX =  ((cx - rect.left) / rect.width)  * 2 - 1;
   const ndcY = -((cy - rect.top)  / rect.height)  * 2 + 1;
-  const vec = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(camera);
-  const d = vec.sub(camera.position).normalize();
-  const t = -camera.position.z / d.z;
-  return { x: camera.position.x + d.x * t, y: camera.position.y + d.y * t };
+  // For orthographic camera unproject gives world XY directly
+  const vec = new THREE.Vector3(ndcX, ndcY, 0).unproject(camera);
+  return { x: vec.x, y: vec.y };
 }
 
 canvas.addEventListener('click', (e) => {
@@ -113,18 +113,23 @@ canvas.addEventListener('click', (e) => {
   });
 });
 
+const ORTHO_H = 6; // half-height in world units — controls logo size
+
 function resize() {
   const rect = canvas.parentElement!.getBoundingClientRect();
   renderer.setSize(rect.width, rect.height, false);
-  camera.aspect = rect.width / rect.height;
-  camera.updateProjectionMatrix();
+  const aspect = rect.width / rect.height;
+  const cam = camera as THREE.OrthographicCamera;
+  cam.top    =  ORTHO_H;
+  cam.bottom = -ORTHO_H;
+  cam.right  =  ORTHO_H * aspect;
+  cam.left   = -ORTHO_H * aspect;
+  cam.updateProjectionMatrix();
 }
 
 function getFrustum() {
-  const halfFov = (camera.fov * Math.PI / 180) / 2;
-  const BY = Math.tan(halfFov) * camera.position.z;
-  const BX = BY * camera.aspect;
-  return { BX, BY };
+  const cam = camera as THREE.OrthographicCamera;
+  return { BX: cam.right, BY: cam.top };
 }
 
 let template: THREE.Object3D;
