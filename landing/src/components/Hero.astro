@@ -108,6 +108,13 @@
   const error = document.getElementById('form-error')!;
   const success = document.getElementById('form-success')!;
 
+  // iOS exclusive: haptic feedback on button tap
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    btn.addEventListener('touchstart', () => {
+      if ('vibrate' in navigator) navigator.vibrate(8);
+    }, { passive: true });
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     error.classList.add('hidden');
