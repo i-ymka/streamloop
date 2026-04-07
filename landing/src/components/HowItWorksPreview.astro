@@ -620,13 +620,29 @@
     var mirror = document.getElementById('sl-bars-html');
     if (mirror) mirror.style.filter = 'none';
 
-    // 2. Discord-style glass on phone wrap — dark frosted, no border
+    // 2. Discord-style glass on phone wrap
+    // Key: top-edge highlight = light reflection on glass. Glow behind = something to blur.
     var phoneWrap = document.querySelector('.sl-phone-wrap');
     if (phoneWrap) {
+      // Purple glow behind phone so blur has color to show
+      var glow = document.createElement('div');
+      glow.style.cssText = [
+        'position:absolute',
+        'inset:-40px -60px',
+        'background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(145,71,255,0.35) 0%,transparent 70%)',
+        'pointer-events:none',
+        'z-index:0',
+        'border-radius:50%',
+      ].join(';');
+      phoneWrap.style.position = 'relative';
+      phoneWrap.insertBefore(glow, phoneWrap.firstChild);
+
       phoneWrap.style.cssText += [
-        'background:rgba(10,8,24,0.55)',
-        '-webkit-backdrop-filter:blur(20px) saturate(150%)',
-        'backdrop-filter:blur(20px) saturate(150%)',
+        'background:rgba(12,9,28,0.5)',
+        '-webkit-backdrop-filter:blur(16px) saturate(160%)',
+        'backdrop-filter:blur(16px) saturate(160%)',
+        // Top highlight = Discord glass signature
+        'box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),inset 0 -1px 0 rgba(145,71,255,0.08),0 8px 32px rgba(0,0,0,0.4)',
         'border-radius:32px',
         'padding:20px 12px',
       ].join(';');
