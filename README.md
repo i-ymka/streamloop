@@ -38,10 +38,10 @@ The core belief: popular streamers weren't born that way. They learned. StreamLo
 
 <div align="center">
 
-<img src="assets/screen-home.png" width="22%">&nbsp;
-<img src="assets/screen-upload.png" width="22%">&nbsp;
-<img src="assets/screen-analysis.png" width="22%">&nbsp;
-<img src="assets/screen-progress.png" width="22%">
+<img src="assets/screen-home.png?v=2" width="22%">&nbsp;
+<img src="assets/screen-upload.png?v=2" width="22%">&nbsp;
+<img src="assets/screen-analysis.png?v=2" width="22%">&nbsp;
+<img src="assets/screen-progress.png?v=2" width="22%">
 
 *Home · Upload · Analysis · Progress*
 
