@@ -1,0 +1,65 @@
+---
+// FounderBridge — narrative bridge between pain and solution
+// A single honest paragraph in the founder's voice
+---
+
+<div class="founder-bridge">
+  <div class="founder-bridge__inner">
+    <p class="founder-bridge__quote">
+      "I built StreamLoop because I spent two years staring at my analytics and having no idea what to change. Not because I wasn't trying — but because no one told me what the &nbsp;<em>one thing</em>&nbsp; was."
+    </p>
+    <p class="founder-bridge__pivot">
+      StreamLoop gives you &nbsp;<em>one thing</em>&nbsp; to fix. Just one. After every stream.
+    </p>
+  </div>
+</div>
+
+<style>
+  .founder-bridge {
+    padding: 80px 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .founder-bridge__inner {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+
+  .founder-bridge__quote {
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    line-height: 1.7;
+    color: #adadb8;
+    font-style: italic;
+    margin: 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  .founder-bridge__quote em,
+  .founder-bridge__pivot em {
+    color: #c4a4ff;
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .founder-bridge__pivot {
+    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+    font-weight: 700;
+    color: #efeff1;
+    margin: 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .founder-bridge__quote,
+    .founder-bridge__pivot {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>

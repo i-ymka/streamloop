@@ -1,0 +1,243 @@
+---
+// PainStatement — three design variants shown simultaneously for founder review
+// Design: OLED dark (#07050F), purple (#9147ff), Plus Jakarta Sans, glassmorphism
+---
+
+<section class="w-full px-6" style="position:relative;overflow:hidden;padding-top:140px;padding-bottom:120px;">
+
+  <!-- SVG filter: animated water distortion (mirrors Hero bars) -->
+  <svg class="absolute" style="width:0;height:0;" aria-hidden="true">
+    <filter id="water-ripple" x="-50%" y="-50%" width="200%" height="200%"
+            color-interpolation-filters="sRGB">
+      <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
+        <animate attributeName="baseFrequency"
+          values="0.015 0.044;0.019 0.052;0.015 0.044"
+          dur="16s" repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
+        xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <!-- CSS glow -->
+  <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
+    style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
+
+  <!-- Mirror bars — pokes upward into Hero -->
+  <div id="sl-bars-wrap" class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
+    style="top:-15px;height:271px;z-index:1;overflow:hidden;">
+    <div id="sl-bars-html" style="position:relative;width:100%;height:100%;filter:url(#water-ripple);">
+      <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);">
+        {Array.from({length: 20}).map((_, i) => {
+          const pos = i / 19;
+          const dist = Math.abs(pos - 0.5) * 2;
+          const h = 30 + 70 * Math.pow(dist, 1.3);
+          const delay = (i * 0.08).toFixed(2);
+          return (
+            <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;${i === 0 ? 'margin-left:-7px;' : ''}${i === 19 ? 'margin-right:-7px;' : ''}`}></div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto" style="max-width:960px;position:relative;z-index:3;">
+
+    <h2 class="fade-up" style="font-size:clamp(2rem,4.5vw,2.75rem);font-weight:800;text-align:center;letter-spacing:-0.02em;line-height:1.15;margin:0 0 3rem;background:linear-gradient(90deg,#ffffff 0%,#c4a4ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+      Sound familiar?
+    </h2>
+
+    <div style="max-width:600px;margin:0 auto;display:flex;flex-direction:column;">
+
+      <div class="fade-up" style="padding:24px 0 24px 24px;border-left:2px solid rgba(145,71,255,0.5);">
+        <h3 style="font-size:1.125rem;font-weight:700;color:#efeff1;margin:0 0 8px;">Streaming into the void</h3>
+        <p style="font-size:0.9375rem;color:#adadb8;line-height:1.7;margin:0;">You go live. One viewer&nbsp;&mdash; that's you on mobile. You end the stream not knowing if anything you did mattered.</p>
+      </div>
+
+      <div aria-hidden="true" style="height:1px;background:linear-gradient(90deg,transparent,rgba(145,71,255,0.15),transparent);margin:4px 0;"></div>
+
+      <div class="fade-up delay-150" style="padding:24px 0 24px 24px;border-left:2px solid rgba(145,71,255,0.5);">
+        <h3 style="font-size:1.125rem;font-weight:700;color:#efeff1;margin:0 0 8px;">Analytics that explain nothing</h3>
+        <p style="font-size:0.9375rem;color:#adadb8;line-height:1.7;margin:0;">Average viewers:&nbsp;1.2. Peak:&nbsp;3. You stare at the numbers. You have no idea what to actually change.</p>
+      </div>
+
+      <div aria-hidden="true" style="height:1px;background:linear-gradient(90deg,transparent,rgba(145,71,255,0.15),transparent);margin:4px 0;"></div>
+
+      <div class="fade-up delay-300" style="padding:24px 0 24px 24px;border-left:2px solid rgba(145,71,255,0.5);">
+        <h3 style="font-size:1.125rem;font-weight:700;color:#efeff1;margin:0 0 8px;">Advice that doesn't stick</h3>
+        <p style="font-size:0.9375rem;color:#adadb8;line-height:1.7;margin:0;">&ldquo;Be consistent. Find your niche.&rdquo; Cool. You've been doing all that. Still stuck.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<style>
+  /* ── Responsive bar count ────────────────────────────────── */
+  @media (max-width: 1023px) {
+    .sl-mirror-bars > div:nth-child(5n) { display: none; }
+  }
+  @media (max-width: 639px) {
+    .sl-mirror-bars > div:nth-child(3n) { display: none; }
+  }
+
+  /* ══════════════════════════════════════════════════
+     VARIANT A — Glassmorphism cards
+  ══════════════════════════════════════════════════ */
+
+  .var-a-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 767px) {
+    .var-a-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .var-a-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(145, 71, 255, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+
+  .var-a-card:hover {
+    background: rgba(145, 71, 255, 0.06);
+    border-color: rgba(145, 71, 255, 0.4);
+  }
+
+  .var-a-title {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #efeff1;
+    margin: 0 0 0.625rem;
+    letter-spacing: -0.01em;
+  }
+
+  .var-a-body {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: #adadb8;
+    margin: 0;
+  }
+
+  /* ══════════════════════════════════════════════════
+     VARIANT B — Conversational with vertical line
+  ══════════════════════════════════════════════════ */
+
+  .var-b-item {
+    padding: 1.75rem 0 1.75rem 1.5rem;
+    border-left: 2px solid rgba(145, 71, 255, 0.5);
+    position: relative;
+  }
+
+  .var-b-title {
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #efeff1;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .var-b-body {
+    font-size: clamp(0.9rem, 1.6vw, 1rem);
+    line-height: 1.7;
+    color: #adadb8;
+    margin: 0;
+  }
+
+  .var-b-sep {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(145, 71, 255, 0.15) 40%,
+      rgba(145, 71, 255, 0.15) 60%,
+      transparent 100%
+    );
+    margin-left: 1.5rem;
+  }
+
+  /* ══════════════════════════════════════════════════
+     VARIANT C — Hero quote + Accordion
+  ══════════════════════════════════════════════════ */
+
+  .var-c-quote-mark {
+    font-size: clamp(4rem, 8vw, 6rem);
+    line-height: 0.6;
+    font-family: Georgia, serif;
+    color: rgba(145, 71, 255, 0.35);
+    display: inline-block;
+    vertical-align: top;
+    user-select: none;
+  }
+
+  .var-c-hero-text {
+    font-size: clamp(1.35rem, 3vw, 1.9rem);
+    font-style: italic;
+    line-height: 1.45;
+    color: #adadb8;
+    margin: 0.5rem 0 0.25rem;
+    font-weight: 400;
+  }
+
+  .var-c-hero-sub {
+    font-size: clamp(0.9rem, 1.6vw, 1rem);
+    color: #6b6b7b;
+    line-height: 1.6;
+    margin: 0.5rem 0 0;
+  }
+
+  .var-c-accordion {
+    border-bottom: 1px solid rgba(145, 71, 255, 0.2);
+  }
+
+  .var-c-accordion:first-of-type {
+    border-top: 1px solid rgba(145, 71, 255, 0.2);
+  }
+
+  .var-c-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-size: clamp(1rem, 1.8vw, 1.1rem);
+    font-weight: 600;
+    color: #efeff1;
+    transition: color 0.2s ease;
+    user-select: none;
+  }
+
+  .var-c-summary::-webkit-details-marker { display: none; }
+
+  .var-c-summary:hover { color: #ffffff; }
+
+  .var-c-chevron {
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+
+  details[open] .var-c-chevron {
+    transform: rotate(180deg);
+  }
+
+  .var-c-body {
+    font-size: clamp(0.875rem, 1.6vw, 1rem);
+    line-height: 1.7;
+    color: #adadb8;
+    margin: 0 0 1rem;
+    padding-left: 0;
+  }
+</style>

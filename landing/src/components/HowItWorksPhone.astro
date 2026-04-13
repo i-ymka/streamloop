@@ -1,0 +1,933 @@
+---
+// HowItWorksPhone — interactive steps + phone mockup
+// Split from HowItWorksPreview.astro
+---
+
+<section style="position:relative;padding:0 20px 64px;">
+  <div class="sl-container" style="position:relative;z-index:3;">
+
+    <!-- Header -->
+    <div class="sl-header">
+      <p class="sl-label" id="sl-label">The Loop</p>
+      <h2 class="sl-title" id="sl-title">Four steps. Every stream. Forever.</h2>
+      <p class="sl-subtitle" id="sl-subtitle">No courses. No fluff. One challenge, one stream, one honest verdict — then repeat.</p>
+    </div>
+
+    <!-- Body: steps + phone -->
+    <div class="sl-body">
+
+      <!-- Steps (left on desktop, top on mobile) -->
+      <div class="sl-steps">
+
+        <button class="sl-step sl-step--active" data-screen="0">
+          <div class="sl-step__num">01</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+              </svg>
+              <h3 class="sl-step__title">Get your challenge</h3>
+            </div>
+            <p class="sl-step__desc">One mission, picked for your exact level. Not a list of tips — a single thing to focus on this stream.</p>
+            <ul class="sl-step__bullets">
+              <li>Personalised to where you actually are</li>
+              <li>Based on your weak spots, not generic advice</li>
+              <li>Takes 5 seconds to read, one stream to do</li>
+            </ul>
+          </div>
+        </button>
+
+        <button class="sl-step" data-screen="1">
+          <div class="sl-step__num">02</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+              </svg>
+              <h3 class="sl-step__title">Stream & upload</h3>
+            </div>
+            <p class="sl-step__desc">Go live, do your thing, then screenshot your stats. Drop it in — the AI reads the numbers, you don't type anything.</p>
+            <ul class="sl-step__bullets">
+              <li>Twitch, YouTube, Kick, TikTok — any platform</li>
+              <li>Just a screenshot — no API, no OAuth</li>
+              <li>Done in under 30 seconds</li>
+            </ul>
+          </div>
+        </button>
+
+        <button class="sl-step" data-screen="2">
+          <div class="sl-step__num">03</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              <h3 class="sl-step__title">See what worked</h3>
+            </div>
+            <p class="sl-step__desc">Not "stream more consistently." The AI tells you what broke this stream, what worked, and what your next challenge is.</p>
+            <ul class="sl-step__bullets">
+              <li>Specific to your numbers, not generic tips</li>
+              <li>What went well, what to fix</li>
+              <li>Next challenge unlocks automatically</li>
+            </ul>
+          </div>
+        </button>
+
+        <button class="sl-step" data-screen="3">
+          <div class="sl-step__num">04</div>
+          <div class="sl-step__content">
+            <div class="sl-step__header">
+              <svg class="sl-step__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              <h3 class="sl-step__title">Track your journey</h3>
+            </div>
+            <p class="sl-step__desc">See where you started, where you are, and what's ahead. Levels, streaks, XP — your whole arc in one place.</p>
+            <ul class="sl-step__bullets">
+              <li>Levels from "Streaming into the void" to "You made it"</li>
+              <li>Weekly streak keeps you consistent</li>
+              <li>Watch yourself grow over months</li>
+            </ul>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- Phone mockup (right on desktop, bottom on mobile) -->
+      <div class="sl-phone-wrap">
+        <div class="sl-phone-frame">
+          <iphone-16-max mode="dark">
+            <div id="sl-screens" style="width:100%;height:100%;position:relative;overflow:hidden;background:hsl(240 55% 6%);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;">
+
+              <!-- ── Screen 0: Home ── -->
+              <div class="sl-screen" data-screen="0" style="position:absolute;inset:0;display:flex;flex-direction:column;background:var(--app-bg);">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+
+                  <!-- Header row -->
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                      <h2 style="font-size:19px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">Hey, Marcus</h2>
+                      <p style="font-size:10px;color:var(--app-muted);margin:3px 0 0;letter-spacing:0.3px;">Week 4 of your journey</p>
+                    </div>
+                    <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 2px rgba(124,58,237,0.3);">
+                      <span style="font-size:13px;font-weight:800;color:white;">M</span>
+                    </div>
+                  </div>
+
+                  <!-- Stats row -->
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <!-- Streak card -->
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+                      <div style="width:28px;height:28px;border-radius:8px;background:rgba(251,146,60,0.15);display:flex;align-items:center;justify-content:center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FB923C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+                      </div>
+                      <p style="font-size:24px;font-weight:800;color:var(--app-text);margin:0;line-height:1;letter-spacing:-0.5px;">4</p>
+                      <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-muted);margin:0;text-transform:uppercase;">Week streak</p>
+                    </div>
+                    <!-- Level card -->
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;">
+                      <div style="width:28px;height:28px;border-radius:8px;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                      </div>
+                      <p style="font-size:18px;font-weight:800;color:var(--app-text);margin:0;line-height:1.1;letter-spacing:-0.3px;">Lvl 2</p>
+                      <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-muted);margin:0;text-transform:uppercase;">Someone's watching</p>
+                    </div>
+                  </div>
+
+                  <!-- Level progress -->
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:14px;padding:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                      <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-muted);margin:0;text-transform:uppercase;">Level progress</p>
+                      <span style="font-size:10px;font-weight:700;color:#A78BFA;background:rgba(124,58,237,0.12);padding:2px 8px;border-radius:20px;">62%</span>
+                    </div>
+                    <div style="height:5px;background:rgba(42,32,64,0.8);border-radius:3px;overflow:hidden;">
+                      <div style="width:62%;height:100%;background:linear-gradient(90deg,#7C3AED,#A78BFA);border-radius:3px;"></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;margin-top:6px;">
+                      <p style="font-size:10px;color:#A78BFA;margin:0;font-weight:500;">Someone's watching</p>
+                      <p style="font-size:10px;color:var(--app-label);margin:0;">Small circle →</p>
+                    </div>
+                  </div>
+
+                  <!-- Challenge label -->
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-label);margin:0;text-transform:uppercase;">Your challenge</p>
+
+                  <!-- Challenge card -->
+                  <div style="background:var(--app-card);border:1px solid rgba(124,58,237,0.35);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                      <span style="background:rgba(124,58,237,0.18);color:#A78BFA;font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:0.8px;border:1px solid rgba(124,58,237,0.3);">ACTIVE</span>
+                      <span style="font-size:10px;color:var(--app-label);">Stream #12</span>
+                    </div>
+                    <p style="font-size:13px;font-weight:700;color:var(--app-text);line-height:1.4;margin:0;">Go live for 60 min without checking your viewer count</p>
+                    <p style="font-size:11px;color:var(--app-muted);line-height:1.5;margin:0;">Anxiety-checking mid-stream tanks your energy. Your audience can feel it.</p>
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                      <div style="display:flex;align-items:center;gap:4px;">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span style="font-size:10px;color:var(--app-label);">Ends Sunday</span>
+                      </div>
+                      <span style="font-size:10px;font-weight:700;color:#FBBF24;background:rgba(251,191,36,0.1);padding:2px 7px;border-radius:6px;">+150 XP</span>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);border-radius:10px;padding:9px;text-align:center;box-shadow:0 4px 12px rgba(124,58,237,0.3);">
+                      <span style="font-size:12px;font-weight:700;color:white;letter-spacing:0.2px;">Mark as Complete</span>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- Nav bar -->
+                <div style="flex-shrink:0;height:56px;background:var(--app-nav);border-top:1px solid var(--app-border);display:flex;align-items:center;padding:0 4px;">
+                  <div class="sl-nav-item sl-nav-active" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;background:rgba(124,58,237,0.12);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+                    <span style="font-size:9px;color:#A78BFA;font-weight:700;">Home</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Upload</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Analysis</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Progress</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Screen 1: Upload ── -->
+              <div class="sl-screen" data-screen="1" style="position:absolute;inset:0;display:none;flex-direction:column;background:var(--app-bg);">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+
+                  <!-- Header -->
+                  <div>
+                    <p style="font-size:19px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">Upload recap</p>
+                    <p style="font-size:10px;color:var(--app-muted);margin:4px 0 0;">Stream #12 · Just finished</p>
+                  </div>
+
+                  <!-- Platform selector -->
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-label);margin:0;text-transform:uppercase;">Platform</p>
+                  <div style="display:flex;gap:6px;">
+                    <span style="background:rgba(124,58,237,0.15);border:1.5px solid rgba(124,58,237,0.5);color:#A78BFA;font-size:11px;font-weight:700;padding:6px 12px;border-radius:10px;letter-spacing:0.2px;">Twitch</span>
+                    <span style="background:var(--app-card);border:1px solid var(--app-border);color:var(--app-label);font-size:11px;padding:6px 12px;border-radius:10px;">YouTube</span>
+                    <span style="background:var(--app-card);border:1px solid var(--app-border);color:var(--app-label);font-size:11px;padding:6px 12px;border-radius:10px;">Kick</span>
+                  </div>
+
+                  <!-- Upload zone label -->
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-label);margin:0;text-transform:uppercase;">Analytics screenshot</p>
+
+                  <!-- Drop zone -->
+                  <div style="border:1.5px dashed rgba(124,58,237,0.25);border-radius:14px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;background:rgba(124,58,237,0.04);">
+                    <div style="width:44px;height:44px;border-radius:12px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    </div>
+                    <p style="font-size:12px;font-weight:600;color:var(--app-muted);margin:0;">Drop your screenshot here</p>
+                    <p style="font-size:10px;color:var(--app-label);margin:0;">or tap to browse from Photos</p>
+                    <p style="font-size:9px;color:var(--app-label);margin:0;opacity:0.7;">PNG, JPG · Max 10MB</p>
+                  </div>
+
+                  <!-- What to capture -->
+                  <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-label);margin:0;text-transform:uppercase;">What to capture</p>
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:20px;height:20px;border-radius:6px;background:rgba(124,58,237,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                      </div>
+                      <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.4;">Peak viewers, avg viewers, duration</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:20px;height:20px;border-radius:6px;background:rgba(124,58,237,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                      </div>
+                      <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.4;">Follower/subscriber growth</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <div style="width:20px;height:20px;border-radius:6px;background:rgba(124,58,237,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                      </div>
+                      <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.4;">Chat activity or engagement</p>
+                    </div>
+                  </div>
+
+                  <!-- CTA disabled -->
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:12px;padding:11px;text-align:center;opacity:0.5;">
+                    <span style="font-size:12px;font-weight:700;color:var(--app-label);">Upload a screenshot first</span>
+                  </div>
+
+                </div>
+                <!-- Nav bar -->
+                <div style="flex-shrink:0;height:56px;background:var(--app-nav);border-top:1px solid var(--app-border);display:flex;align-items:center;padding:0 4px;">
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Home</span>
+                  </div>
+                  <div class="sl-nav-item sl-nav-active" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;background:rgba(124,58,237,0.12);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span style="font-size:9px;color:#A78BFA;font-weight:700;">Upload</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Analysis</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Progress</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Screen 2: Analysis ── -->
+              <div class="sl-screen" data-screen="2" style="position:absolute;inset:0;display:none;flex-direction:column;background:var(--app-bg);">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+
+                  <!-- Header -->
+                  <div>
+                    <p style="font-size:19px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">Stream analysis</p>
+                    <p style="font-size:10px;color:var(--app-label);margin:4px 0 0;letter-spacing:0.5px;text-transform:uppercase;">Stream #11 · Twitch · Nov 12</p>
+                  </div>
+
+                  <!-- Stream title -->
+                  <h3 style="font-size:13px;font-weight:700;color:var(--app-muted);margin:0;line-height:1.4;">Playing Hollow Knight — First Playthrough</h3>
+
+                  <!-- Metrics grid -->
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:10px;padding:8px 4px;text-align:center;">
+                      <p style="font-size:16px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">8</p>
+                      <p style="font-size:8px;color:var(--app-label);margin:3px 0 0;line-height:1.2;letter-spacing:0.3px;">peak</p>
+                    </div>
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:10px;padding:8px 4px;text-align:center;">
+                      <p style="font-size:16px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">3.2</p>
+                      <p style="font-size:8px;color:var(--app-label);margin:3px 0 0;line-height:1.2;letter-spacing:0.3px;">avg</p>
+                    </div>
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:10px;padding:8px 4px;text-align:center;">
+                      <p style="font-size:14px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">1h47</p>
+                      <p style="font-size:8px;color:var(--app-label);margin:3px 0 0;line-height:1.2;letter-spacing:0.3px;">time</p>
+                    </div>
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:10px;padding:8px 4px;text-align:center;">
+                      <p style="font-size:16px;font-weight:800;color:#4ADE80;margin:0;letter-spacing:-0.3px;">+2</p>
+                      <p style="font-size:8px;color:var(--app-label);margin:3px 0 0;line-height:1.2;letter-spacing:0.3px;">follow</p>
+                    </div>
+                  </div>
+
+                  <!-- Challenge complete banner -->
+                  <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:12px;padding:11px 12px;display:flex;flex-direction:column;gap:5px;">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <div style="width:18px;height:18px;border-radius:50%;background:rgba(34,197,94,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      </div>
+                      <p style="font-size:10px;font-weight:700;color:#22C55E;margin:0;letter-spacing:0.5px;text-transform:uppercase;">Challenge complete</p>
+                    </div>
+                    <p style="font-size:10px;color:#86EFAC;margin:0;line-height:1.5;">You streamed 71 min without checking. You nailed it.</p>
+                    <span style="font-size:10px;font-weight:700;color:#22C55E;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:6px;align-self:flex-start;">+150 XP earned</span>
+                  </div>
+
+                  <!-- What went well -->
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:16px;height:16px;border-radius:4px;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:#4ADE80;margin:0;text-transform:uppercase;">What went well</p>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:5px;">
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-left:2px solid #22C55E;border-radius:10px;padding:9px 11px;">
+                      <p style="font-size:11px;font-weight:700;color:var(--app-text);margin:0 0 3px;">You held your audience</p>
+                      <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.4;">40% viewer retention — solid for your stage.</p>
+                    </div>
+                    <div style="background:var(--app-card);border:1px solid var(--app-border);border-left:2px solid #22C55E;border-radius:10px;padding:9px 11px;">
+                      <p style="font-size:11px;font-weight:700;color:var(--app-text);margin:0 0 3px;">Natural reactions</p>
+                      <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.4;">Peak (8 viewers) hit during the boss fight.</p>
+                    </div>
+                  </div>
+
+                  <!-- What to work on -->
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <div style="width:16px;height:16px;border-radius:4px;background:rgba(249,115,22,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                    </div>
+                    <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:#F97316;margin:0;text-transform:uppercase;">What to work on</p>
+                  </div>
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-left:2px solid #F97316;border-radius:10px;padding:9px 11px;">
+                    <p style="font-size:11px;font-weight:700;color:var(--app-text);margin:0 0 3px;">Dead air at the start</p>
+                    <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.4;">Lost 2 viewers in first 8 min — talk during loading screens.</p>
+                  </div>
+
+                  <!-- Next challenge -->
+                  <div style="background:var(--app-card);border:1px solid rgba(124,58,237,0.3);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+                    <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--app-label);margin:0;text-transform:uppercase;">Your next challenge</p>
+                    <p style="font-size:12px;font-weight:700;color:var(--app-text);margin:0;line-height:1.4;">Open your stream with a 60-second hook about your playstyle</p>
+                    <div style="background:linear-gradient(135deg,#7C3AED,#6D28D9);border-radius:10px;padding:9px;text-align:center;box-shadow:0 4px 12px rgba(124,58,237,0.3);">
+                      <span style="font-size:12px;font-weight:700;color:white;">Accept Challenge</span>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- Nav bar -->
+                <div style="flex-shrink:0;height:56px;background:var(--app-nav);border-top:1px solid var(--app-border);display:flex;align-items:center;padding:0 4px;">
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Home</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Upload</span>
+                  </div>
+                  <div class="sl-nav-item sl-nav-active" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;background:rgba(124,58,237,0.12);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span style="font-size:9px;color:#A78BFA;font-weight:700;">Analysis</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Progress</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── Screen 3: Progress ── -->
+              <div class="sl-screen" data-screen="3" style="position:absolute;inset:0;display:none;flex-direction:column;background:var(--app-bg);">
+                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:10px;">
+
+                  <!-- Header -->
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                      <h2 style="font-size:19px;font-weight:800;color:var(--app-text);margin:0;letter-spacing:-0.3px;">Your journey</h2>
+                      <p style="font-size:10px;color:var(--app-muted);margin:3px 0 0;">Week 4 of streaming</p>
+                    </div>
+                    <div style="background:var(--app-card);border:1px solid rgba(251,191,36,0.25);border-radius:20px;padding:5px 10px;display:flex;align-items:center;gap:5px;">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                      <span style="font-size:11px;font-weight:700;color:#FBBF24;">310 XP</span>
+                    </div>
+                  </div>
+
+                  <!-- Phase label: Early Game -->
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:3px;height:32px;background:linear-gradient(to bottom,#7C3AED,#A78BFA);border-radius:2px;flex-shrink:0;"></div>
+                    <div>
+                      <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:#A78BFA;margin:0;text-transform:uppercase;">Early game</p>
+                      <p style="font-size:10px;color:var(--app-label);margin:1px 0 0;">Finding your footing</p>
+                    </div>
+                  </div>
+
+                  <!-- Level 1: Complete -->
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;">
+                    <div style="width:28px;height:28px;border-radius:50%;background:rgba(34,197,94,0.15);border:1.5px solid rgba(34,197,94,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div style="flex:1;">
+                      <div style="display:flex;justify-content:space-between;">
+                        <p style="font-size:9px;font-weight:700;letter-spacing:0.8px;color:#4ADE80;margin:0;text-transform:uppercase;">Level 1</p>
+                        <p style="font-size:9px;color:var(--app-label);margin:0;">Weeks 1–2</p>
+                      </div>
+                      <p style="font-size:12px;font-weight:700;color:var(--app-muted);margin:3px 0 0;">Streaming into the void</p>
+                    </div>
+                  </div>
+
+                  <!-- Level 2: Active -->
+                  <div style="background:rgba(124,58,237,0.06);border:1.5px solid rgba(124,58,237,0.4);border-radius:12px;padding:11px 13px;display:flex;align-items:flex-start;gap:10px;">
+                    <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;box-shadow:0 0 0 3px rgba(124,58,237,0.2);">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div style="flex:1;">
+                      <div style="display:flex;justify-content:space-between;">
+                        <p style="font-size:9px;font-weight:700;letter-spacing:0.8px;color:#A78BFA;margin:0;text-transform:uppercase;">Level 2 · Active</p>
+                        <p style="font-size:9px;color:var(--app-label);margin:0;">Weeks 3–6</p>
+                      </div>
+                      <p style="font-size:12px;font-weight:700;color:var(--app-text);margin:3px 0 6px;">Someone's watching</p>
+                      <div style="height:4px;background:rgba(42,32,64,0.8);border-radius:3px;overflow:hidden;">
+                        <div style="width:62%;height:100%;background:linear-gradient(90deg,#7C3AED,#A78BFA);border-radius:3px;"></div>
+                      </div>
+                      <p style="font-size:9px;font-weight:700;color:#A78BFA;margin:4px 0 0;text-align:right;">62%</p>
+                    </div>
+                  </div>
+
+                  <!-- Phase label: Mid Game -->
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:3px;height:32px;background:linear-gradient(to bottom,#3B82F6,#60A5FA);border-radius:2px;flex-shrink:0;opacity:0.5;"></div>
+                    <div>
+                      <p style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:#60A5FA;margin:0;text-transform:uppercase;opacity:0.5;">Mid game</p>
+                      <p style="font-size:10px;color:var(--app-label);margin:1px 0 0;opacity:0.5;">Building momentum</p>
+                    </div>
+                  </div>
+
+                  <!-- Level 3: Locked -->
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px;opacity:0.4;">
+                    <div style="width:28px;height:28px;border-radius:50%;background:var(--app-card);border:1.5px solid var(--app-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    </div>
+                    <div>
+                      <p style="font-size:9px;font-weight:700;letter-spacing:0.8px;color:var(--app-label);margin:0;text-transform:uppercase;">Level 3 · Weeks 7–12</p>
+                      <p style="font-size:12px;font-weight:700;color:var(--app-label);margin:3px 0 0;">Small circle</p>
+                    </div>
+                  </div>
+
+                  <!-- Motivational card -->
+                  <div style="background:var(--app-card);border:1px solid var(--app-border);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:flex-start;">
+                    <div style="width:32px;height:32px;border-radius:10px;background:rgba(124,58,237,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div>
+                      <p style="font-size:11px;font-weight:700;color:var(--app-text);margin:0 0 4px;">38% of streamers quit in week 3.</p>
+                      <p style="font-size:10px;color:var(--app-muted);margin:0;line-height:1.5;">You're still here. That's how this works.</p>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- Nav bar -->
+                <div style="flex-shrink:0;height:56px;background:var(--app-nav);border-top:1px solid var(--app-border);display:flex;align-items:center;padding:0 4px;">
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Home</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Upload</span>
+                  </div>
+                  <div class="sl-nav-item" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--app-label)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    <span style="font-size:9px;color:var(--app-label);">Analysis</span>
+                  </div>
+                  <div class="sl-nav-item sl-nav-active" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:10px;background:rgba(124,58,237,0.12);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+                    <span style="font-size:9px;color:#A78BFA;font-weight:700;">Progress</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </iphone-16-max>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script type="module" src="https://unpkg.com/@sneas/telephone/index.js"></script>
+
+<style>
+  /* ── Section design tokens ── */
+  :root {
+    --sl-bg: hsl(258 60% 5%);
+    --sl-surface: hsl(258 40% 11%);
+    --sl-border: hsl(258 35% 18%);
+    --sl-purple: hsl(263 69% 56%);
+    --sl-purple-dim: hsl(263 69% 56% / 0.12);
+    --sl-text: hsl(213 31% 95%);
+    --sl-muted: hsl(220 10% 68%);
+    --sl-label: hsl(220 10% 43%);
+  }
+
+  /* ── App screen design tokens (Gaming palette — HSL) ── */
+  #sl-screens {
+    --app-bg:     hsl(240 55% 6%);
+    --app-card:   hsl(244 43% 13%);
+    --app-nav:    hsl(243 50% 5%);
+    --app-border: hsl(263 42% 20% / 0.7);
+    --app-text:   hsl(213 31% 95%);
+    --app-muted:  hsl(215 20% 65%);
+    --app-label:  hsl(220 15% 38%);
+  }
+
+  /* ── Layout ── */
+  .sl-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .sl-header {
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 40px;
+  }
+  @media (min-width: 768px) {
+    .sl-header { padding-bottom: 64px; }
+  }
+  .sl-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sl-purple);
+    margin: 0 0 12px;
+  }
+  .sl-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    color: var(--sl-text);
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+  .sl-subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    color: var(--sl-muted);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── Body: steps + phone ── */
+  .sl-body {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 32px;
+    padding-top: 40px;
+  }
+  @media (min-width: 768px) {
+    .sl-body { padding-top: 64px; }
+  }
+  @media (min-width: 1024px) {
+    .sl-body {
+      flex-direction: row;
+      align-items: center;
+      gap: 64px;
+    }
+  }
+
+  /* ── Steps ── */
+  .sl-steps {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .sl-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+  }
+
+  .sl-step {
+    display: flex;
+    gap: 20px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid hsl(258 35% 16%);
+    background: hsl(258 40% 7%);
+    cursor: pointer;
+    text-align: left;
+    transition: background 200ms ease, border-color 200ms ease;
+    width: 100%;
+  }
+  @media (min-width: 1024px) {
+    .sl-step { padding: 20px; border-radius: 16px; }
+  }
+  .sl-step:hover {
+    background: hsl(263 69% 56% / 0.08);
+    border-color: hsl(263 69% 56% / 0.25);
+  }
+  .sl-step--active {
+    background: var(--sl-purple-dim);
+    border-color: hsl(263 69% 56% / 0.4);
+  }
+
+  .sl-step__num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--sl-purple);
+    opacity: 0.45;
+    flex-shrink: 0;
+    padding-top: 2px;
+    min-width: 24px;
+    transition: opacity 200ms ease;
+  }
+  .sl-step--active .sl-step__num { opacity: 1; }
+
+  .sl-step__content { flex: 1; min-width: 0; }
+
+  .sl-step__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+  }
+  @media (min-width: 1024px) {
+    .sl-step__header { gap: 10px; margin-bottom: 8px; }
+  }
+  .sl-step__icon {
+    width: 18px;
+    height: 18px;
+    color: var(--sl-purple);
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: opacity 200ms ease;
+  }
+  .sl-step--active .sl-step__icon { opacity: 1; }
+
+  .sl-step__title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sl-text);
+    margin: 0;
+    line-height: 1.3;
+  }
+  @media (min-width: 1024px) {
+    .sl-step__title { font-size: 15px; }
+  }
+
+  .sl-step__desc {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .sl-step__desc {
+      display: block;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      color: var(--sl-muted);
+      line-height: 1.6;
+      margin: 0 0 10px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 250ms ease, opacity 250ms ease, margin 250ms ease;
+    }
+    .sl-step--active .sl-step__desc {
+      max-height: 160px;
+      opacity: 1;
+    }
+  }
+
+  .sl-step__bullets {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .sl-step__bullets {
+      display: flex;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 250ms ease, opacity 250ms ease;
+    }
+    .sl-step--active .sl-step__bullets {
+      max-height: 120px;
+      opacity: 1;
+    }
+  }
+  .sl-step__bullets li {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    color: var(--sl-label);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .sl-step__bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--sl-purple);
+    opacity: 0.6;
+  }
+
+  /* ── Phone ── */
+  .sl-phone-wrap {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .sl-phone-frame {
+    width: 270px;
+  }
+
+  /* ── Scrollbar hide ── */
+  #sl-screens * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  #sl-screens *::-webkit-scrollbar { display: none; }
+
+  /* ── Screen transition ── */
+  .sl-screen {
+    transition: opacity 250ms ease, transform 250ms ease;
+  }
+  .sl-screen--entering {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .sl-screen--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Blur bar ── */
+  #sl-screens .sl-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 36px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(8, 6, 20, 0.6);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // iOS: CSS filter:url on HTML broken (WebKit bug #261806) — show clean mirror
+  (function () {
+    var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    if (!isIOS) return;
+
+    // 1. Remove broken CSS filter on mirror (in HowItWorksHeader)
+    var mirror = document.getElementById('sl-bars-html');
+    if (mirror) mirror.style.filter = 'none';
+
+    // 2. Discord-style glass on phone wrap
+    var phoneWrap = document.querySelector('.sl-phone-wrap');
+    if (phoneWrap) {
+      var glow = document.createElement('div');
+      glow.style.cssText = [
+        'position:absolute',
+        'inset:-40px -60px',
+        'background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(145,71,255,0.35) 0%,transparent 70%)',
+        'pointer-events:none',
+        'z-index:0',
+        'border-radius:50%',
+      ].join(';');
+      phoneWrap.style.position = 'relative';
+      phoneWrap.insertBefore(glow, phoneWrap.firstChild);
+
+      phoneWrap.style.cssText += [
+        'background:rgba(12,9,28,0.5)',
+        '-webkit-backdrop-filter:blur(16px) saturate(160%)',
+        'backdrop-filter:blur(16px) saturate(160%)',
+        'box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),inset 0 -1px 0 rgba(145,71,255,0.08),0 8px 32px rgba(0,0,0,0.4)',
+        'border-radius:32px',
+        'padding:20px 12px',
+      ].join(';');
+    }
+
+    // 3. Gyroscope 3D parallax
+    if (!window.DeviceOrientationEvent) return;
+
+    var section = document.getElementById('how-it-works');
+    var phoneEl = document.querySelector('.sl-phone-wrap');
+    var header  = document.querySelector('.sl-header');
+
+    function handleOrientation(e) {
+      var gamma = e.gamma || 0;
+      var beta  = (e.beta || 0) - 30;
+
+      gamma = Math.max(-25, Math.min(25, gamma));
+      beta  = Math.max(-20, Math.min(20, beta));
+
+      if (phoneEl) phoneEl.style.transform = 'translateX(' + (gamma * 0.6) + 'px) translateY(' + (beta * 0.3) + 'px)';
+      if (header)  header.style.transform  = 'translateX(' + (gamma * 0.25) + 'px) translateY(' + (beta * 0.12) + 'px)';
+      if (mirror)  mirror.style.transform  = 'translateX(' + (gamma * 0.08) + 'px)';
+    }
+
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      document.addEventListener('touchstart', function askPermission() {
+        DeviceOrientationEvent.requestPermission()
+          .then(function(state) {
+            if (state === 'granted') {
+              window.addEventListener('deviceorientation', handleOrientation);
+            }
+          });
+        document.removeEventListener('touchstart', askPermission);
+      }, { once: true });
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
+  })();
+</script>
+
+<script>
+  (function () {
+    var steps   = document.querySelectorAll('.sl-step');
+    var screens = document.querySelectorAll('#sl-screens .sl-screen');
+    var navItems = document.querySelectorAll('#sl-screens .sl-nav-item');
+    var current = 0;
+
+    var stepData = [
+      { label: '01 / 04', title: 'Get your challenge', subtitle: 'One mission, picked for your exact level. Not a list of tips — a single thing to focus on this stream.' },
+      { label: '02 / 04', title: 'Stream & upload', subtitle: 'Go live, do your thing, then screenshot your stats. The AI reads the numbers — you don\'t type anything.' },
+      { label: '03 / 04', title: 'See what worked', subtitle: 'Not "stream more consistently." The AI tells you what broke this stream, what worked, and what\'s next.' },
+      { label: '04 / 04', title: 'Track your journey', subtitle: 'See where you started, where you are, and what\'s ahead. Levels, streaks, XP — your whole arc in one place.' },
+    ];
+    var isMobile = function() { return window.innerWidth < 1024; };
+
+    var elLabel    = document.getElementById('sl-label');
+    var elTitle    = document.getElementById('sl-title');
+    var elSubtitle = document.getElementById('sl-subtitle');
+
+    function goTo(index) {
+      if (index === current && screens[index].style.display === 'flex') return;
+      current = index;
+
+      steps.forEach(function (s, i) {
+        s.classList.toggle('sl-step--active', i === index);
+      });
+
+      if (isMobile() && stepData[index]) {
+        if (elLabel)    elLabel.textContent    = stepData[index].label;
+        if (elTitle)    elTitle.textContent    = stepData[index].title;
+        if (elSubtitle) elSubtitle.textContent = stepData[index].subtitle;
+      }
+
+      navItems.forEach(function (nav) {
+        var parent = nav.parentElement;
+        var siblings = Array.prototype.slice.call(parent.querySelectorAll('.sl-nav-item'));
+        var pos = siblings.indexOf(nav);
+        var icon = nav.querySelector('svg');
+        var label = nav.querySelector('span');
+        var isActive = pos === index;
+        nav.classList.toggle('sl-nav-active', isActive);
+        if (icon) icon.setAttribute('stroke', isActive ? '#A78BFA' : 'var(--app-label, #4A4A6A)');
+        if (label) {
+          label.style.color = isActive ? '#A78BFA' : '';
+          label.style.fontWeight = isActive ? '700' : '';
+        }
+        nav.style.background = isActive ? 'rgba(124,58,237,0.12)' : '';
+        nav.style.borderRadius = isActive ? '10px' : '';
+      });
+
+      screens.forEach(function (s, i) {
+        if (i === index) {
+          s.style.display = 'flex';
+          s.classList.add('sl-screen--entering');
+          s.classList.remove('sl-screen--visible');
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              s.classList.remove('sl-screen--entering');
+              s.classList.add('sl-screen--visible');
+            });
+          });
+        } else {
+          s.style.display = 'none';
+          s.classList.remove('sl-screen--visible', 'sl-screen--entering');
+        }
+      });
+    }
+
+    steps.forEach(function (step, i) {
+      step.addEventListener('click', function () { goTo(i); });
+    });
+
+    navItems.forEach(function (nav) {
+      nav.style.cursor = 'pointer';
+      nav.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var parent = nav.parentElement;
+        var siblings = parent.querySelectorAll('.sl-nav-item');
+        var idx = Array.prototype.indexOf.call(siblings, nav);
+        if (idx >= 0 && idx < screens.length) goTo(idx);
+      });
+    });
+  })();
+</script>

@@ -6,52 +6,12 @@
 
 <section id="how-it-works" class="sl-section" style="position:relative;overflow:hidden;">
 
-  <!-- SVG filter: animated water distortion -->
-  <svg class="absolute" style="width:0;height:0;" aria-hidden="true">
-    <filter id="water-ripple" x="-50%" y="-50%" width="200%" height="200%"
-            color-interpolation-filters="sRGB">
-      <feTurbulence type="turbulence" baseFrequency="0.016 0.046" numOctaves="3" result="noise">
-        <animate attributeName="baseFrequency"
-          values="0.015 0.044;0.019 0.052;0.015 0.044"
-          dur="16s" repeatCount="indefinite"
-          calcMode="spline"
-          keySplines="0.4 0 0.6 1;0.4 0 0.6 1"/>
-      </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="14"
-        xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </svg>
-
-  <!-- CSS glow — matches Hero's radial glow -->
-  <div class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
-    style="top:0;height:256px;z-index:0;background:radial-gradient(ellipse 70% 50% at 50% 20%,rgba(145,71,255,0.18) 0%,transparent 70%);"></div>
-
-
-  <!-- Mirror bars with edge bleed for displacement -->
-  <div id="sl-bars-wrap" class="absolute left-0 right-0 pointer-events-none" aria-hidden="true"
-    style="top:-15px;height:271px;z-index:1;overflow:hidden;">
-    <div id="sl-bars-html" style="position:relative;width:100%;height:100%;filter:url(#water-ripple);">
-      <div class="sl-mirror-bars" style="position:relative;width:100%;height:100%;display:flex;align-items:flex-end;transform:scaleY(-1);">
-        {Array.from({length: 20}).map((_, i) => {
-          const pos = i / 19;
-          const dist = Math.abs(pos - 0.5) * 2;
-          const h = 30 + 70 * Math.pow(dist, 1.3);
-          const delay = (i * 0.08).toFixed(2);
-          return (
-            <div style={`flex:1;height:${h}%;background:linear-gradient(to top,#9147ff,transparent);opacity:0.35;animation:pulseBar 2s ease-in-out ${delay}s infinite alternate;`}></div>
-          );
-        })}
-      </div>
-    </div>
-  </div>
-
-
   <div class="sl-container" style="position:relative;z-index:3;">
 
     <!-- Header -->
     <div class="sl-header">
       <p class="sl-label" id="sl-label">The Loop</p>
-      <h2 class="sl-title" id="sl-title">Four steps. Every stream. Forever.</h2>
+      <h2 class="sl-title" id="sl-title">Four steps. Every stream.</h2>
       <p class="sl-subtitle" id="sl-subtitle">No courses. No fluff. One challenge, one stream, one honest verdict — then repeat.</p>
     </div>
 
@@ -133,6 +93,7 @@
           </div>
         </button>
 
+        <p class="sl-steps-hint">Tap each step to see it in the app</p>
       </div>
 
       <!-- Phone mockup (right on desktop, bottom on mobile) -->
@@ -143,10 +104,10 @@
 
               <!-- ── Screen 0: Home ── -->
               <div class="sl-screen" data-screen="0" style="position:absolute;inset:0;display:flex;flex-direction:column;background:#080614;">
-                <div style="flex:1;overflow-y:auto;padding:36px 14px 10px;display:flex;flex-direction:column;gap:5px;">
+                <div style="flex:1;overflow-y:hidden;padding:36px 14px 10px;display:flex;flex-direction:column;gap:5px;">
                   <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                     <div>
-                      <h2 style="font-size:20px;font-weight:700;color:#F1F5F9;margin:0;">Hey, Marcus 👋</h2>
+                      <h2 style="font-size:20px;font-weight:700;color:#F1F5F9;margin:0;">Hey, you 👋</h2>
                       <p style="font-size:11px;color:#64748B;margin:3px 0 0;">Week 4 of your journey</p>
                     </div>
                     <div style="width:32px;height:32px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
@@ -313,6 +274,26 @@
       </div>
 
     </div>
+
+    <!-- Repeat CTA after phone demo -->
+    <div class="sl-repeat-cta">
+      <p class="sl-repeat-cta__label">Ready to get your first challenge?</p>
+      <form class="sl-repeat-cta__form" id="waitlist-form-2" novalidate>
+        <input
+          id="email-input-2"
+          type="email"
+          placeholder="your@email.com"
+          autocomplete="email"
+          required
+          class="sl-repeat-cta__input"
+        />
+        <button type="submit" class="sl-repeat-cta__btn">Get my first challenge</button>
+      </form>
+      <p id="form-error-2" class="hidden" style="color:#f87171;font-size:0.8rem;margin-top:8px;">Please enter a valid email.</p>
+      <div id="form-success-2" class="hidden" style="color:#c4a4ff;font-size:0.875rem;margin-top:8px;">You're on the list!</div>
+      <p style="color:#6b6b7b;font-size:0.75rem;margin-top:8px;">No spam. No pressure. We're also introverts.</p>
+    </div>
+
   </div>
 </section>
 
@@ -396,6 +377,12 @@
   }
 
   /* ── Steps ── */
+  .sl-steps-hint {
+    font-size: 11px;
+    color: #6b6b7b;
+    margin: 12px 0 0 4px;
+    letter-spacing: 0.02em;
+  }
   .sl-steps {
     display: none;
   }
@@ -542,12 +529,60 @@
     opacity: 0.6;
   }
 
+  /* ── Step left-edge progress bar ── */
+  .sl-step {
+    position: relative;
+  }
+  .sl-step::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: rgba(145, 71, 255, 0.15);
+    border-radius: 2px;
+  }
+  .sl-step::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 2px;
+    height: 0%;
+    background: #9147ff;
+    border-radius: 2px;
+    transition: height 0.4s ease;
+  }
+  .sl-step--active::after {
+    height: calc(100% - 24px);
+  }
+
   /* ── Phone ── */
   .sl-phone-wrap {
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    opacity: 0;
+    transform: scale(0.88) translateY(32px);
+    filter: blur(6px);
+    transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+                filter 0.6s ease;
+  }
+  .sl-phone-wrap.is-visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sl-phone-wrap {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
   }
   .sl-phone-frame {
     width: 270px;
@@ -560,21 +595,6 @@
   @media (max-width: 639px) {
     .sl-mirror-bars > div:nth-child(3n) { display: none; }
   }
-
-  /* ── Edge bleed for displacement filter — provides pixels at edges ── */
-  .sl-mirror-bars::before,
-  .sl-mirror-bars::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 30px;
-    background: linear-gradient(to top, #9147ff, transparent);
-    opacity: 0.35;
-    animation: pulseBar 2s ease-in-out infinite alternate;
-  }
-  .sl-mirror-bars::before { left: -30px; animation-delay: 0s; }
-  .sl-mirror-bars::after { right: -30px; animation-delay: 1.52s; }
 
   /* ── Scrollbar hide ── */
   #sl-screens * {
@@ -595,6 +615,61 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Nav hint CSS moved to global.css — JS-created elements don't get Astro scoping */
+
+  /* ── Repeat CTA ── */
+  .sl-repeat-cta {
+    text-align: center;
+    padding: 80px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .sl-repeat-cta__label {
+    color: #adadb8;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .sl-repeat-cta__form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 440px;
+  }
+  .sl-repeat-cta__input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.06);
+    color: #efeff1;
+    font-size: 0.875rem;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .sl-repeat-cta__input:focus {
+    border-color: rgba(145,71,255,0.6);
+  }
+  .sl-repeat-cta__btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: #9147ff;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .sl-repeat-cta__btn:hover { opacity: 0.9; }
 
   /* ── Blur bar ── */
   #sl-screens .sl-screen::before {
@@ -708,6 +783,48 @@
     var elTitle    = document.getElementById('sl-title');
     var elSubtitle = document.getElementById('sl-subtitle');
 
+    // Create and position the hint overlay for the next nav slot
+    var hintOverlay = null;
+    function buildHintOverlay() {
+      var el = document.createElement('div');
+      el.className = 'sl-nav-hint-overlay';
+      el.innerHTML =
+        '<span class="hint-label">tap to explore</span>' +
+        '<div class="hint-rings">' +
+          '<div class="hint-ring"></div>' +
+          '<div class="hint-ring"></div>' +
+        '</div>';
+      return el;
+    }
+
+    function updateNavHintOverlay(index) {
+      // Remove existing overlay from any screen
+      if (hintOverlay && hintOverlay.parentElement) {
+        hintOverlay.parentElement.removeChild(hintOverlay);
+      }
+      if (window.innerWidth >= 1024) return;
+
+      var activeScreen = screens[index];
+      if (!activeScreen) return;
+
+      // Next nav index (wraps: after last screen show index 0 hint)
+      var nextNavIndex = (index + 1) % 4;
+
+      if (!hintOverlay) hintOverlay = buildHintOverlay();
+
+      /*
+       * Position the zero-size anchor at the centre of the hinted nav icon:
+       *   horizontal: slot centre = (nextNavIndex + 0.5) / 4 * 100%
+       *   vertical:   nav bar mid = 27px from screen bottom
+       */
+      hintOverlay.style.left = ((nextNavIndex + 0.5) / 4 * 100) + '%';
+      hintOverlay.style.bottom = '27px';
+
+      // Append to #sl-screens (has overflow:hidden) not to active screen
+      var screensContainer = document.getElementById('sl-screens');
+      if (screensContainer) screensContainer.appendChild(hintOverlay);
+    }
+
     function goTo(index) {
       if (index === current && screens[index].style.display === 'flex') return;
       current = index;
@@ -738,6 +855,9 @@
           label.style.fontWeight = isActive ? '600' : '400';
         }
       });
+
+      // Nav hint overlay — mobile only: show ping ring + label above the NEXT nav icon
+      updateNavHintOverlay(index);
 
       // Animate screen transition
       screens.forEach(function (s, i) {
@@ -774,6 +894,102 @@
         if (idx >= 0 && idx < screens.length) goTo(idx);
       });
     });
+
+    // Init hint on screen 0 (mobile only)
+    updateNavHintOverlay(0);
+  })();
+
+  // Phone materialise on scroll into view
+  (function() {
+    var phoneWrap = document.querySelector('.sl-phone-wrap');
+    if (!phoneWrap) return;
+    var obs = new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        phoneWrap.classList.add('is-visible');
+        obs.disconnect();
+      }
+    }, { threshold: 0.2 });
+    obs.observe(phoneWrap);
+  })();
+
+  // Repeat waitlist form
+  (function() {
+    var SCRIPT_URL2 = 'https://script.google.com/macros/s/AKfycbzfUYcflfSDcnQa04wpyn5-1JpR5uZwYoxZyqvKwcW3-lEgf1rI7pEV59BPEf87oO8S/exec';
+    var form2 = document.getElementById('waitlist-form-2');
+    var input2 = document.getElementById('email-input-2');
+    var error2 = document.getElementById('form-error-2');
+    var success2 = document.getElementById('form-success-2');
+    if (!form2) return;
+    form2.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      error2.classList.add('hidden');
+      var email = input2.value.trim();
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        error2.classList.remove('hidden');
+        return;
+      }
+      var btn = form2.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+      try {
+        await fetch(SCRIPT_URL2, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify({email}) });
+        form2.classList.add('hidden');
+        success2.classList.remove('hidden');
+      } catch {
+        btn.disabled = false;
+        btn.textContent = 'Get my first challenge';
+        error2.classList.remove('hidden');
+        error2.textContent = 'Something went wrong. Try again.';
+      }
+    });
+  })();
+
+  // ── Scroll-until-reach on phone ─────────────────────────────────────────
+  // Hover over phone → capture wheel. At scroll boundary → release to page.
+  (function () {
+    var phoneWrap = document.querySelector('.sl-phone-wrap');
+    if (!phoneWrap) return;
+
+    var hovered = false;
+
+    phoneWrap.addEventListener('mouseenter', function () { hovered = true; });
+    phoneWrap.addEventListener('mouseleave', function () { hovered = false; });
+
+    window.addEventListener('wheel', function (e) {
+      if (!hovered) return;
+
+      // Find scrollable element in active screen
+      var activeScreen = document.querySelector('.sl-screen.sl-screen--visible');
+      if (!activeScreen) return;
+
+      var scrollable = (function () {
+        var node = e.target;
+        // Walk up from event target looking for scrollable
+        while (node && node !== document.body) {
+          var oy = window.getComputedStyle(node).overflowY;
+          if ((oy === 'auto' || oy === 'scroll') && node.scrollHeight > node.clientHeight + 1) return node;
+          node = node.parentElement;
+        }
+        // Fallback: first scrollable child of active screen
+        var kids = activeScreen.querySelectorAll('*');
+        for (var i = 0; i < kids.length; i++) {
+          var oy2 = window.getComputedStyle(kids[i]).overflowY;
+          if ((oy2 === 'auto' || oy2 === 'scroll') && kids[i].scrollHeight > kids[i].clientHeight + 1) return kids[i];
+        }
+        return null;
+      })();
+
+      if (!scrollable) return;
+
+      var atTop    = scrollable.scrollTop <= 0 && e.deltaY < 0;
+      var atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 1 && e.deltaY > 0;
+
+      if (atTop || atBottom) return; // release to page
+
+      e.preventDefault();
+      scrollable.scrollTop += e.deltaY;
+
+    }, { passive: false });
   })();
 </script>
 

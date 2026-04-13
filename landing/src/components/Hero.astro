@@ -47,7 +47,7 @@
 
     <!-- Subheadline -->
     <p class="fade-up delay-250 text-lg sm:text-xl max-w-xl leading-relaxed" style="color:#adadb8;">
-      The feedback loop every streamer needs but no one built. Until now.
+      You're putting in the streams. The chat is empty. The analytics make no sense. StreamLoop gives you one specific thing to fix — every single stream.
     </p>
 
     <!-- Form -->
@@ -73,18 +73,29 @@
         class="px-6 py-3.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95 whitespace-nowrap"
         style="background:#9147ff;color:#fff;"
       >
-        Join the waitlist
+        Get my first challenge
       </button>
     </form>
+
+    <!-- Micro-copy -->
+    <p class="fade-up delay-400 text-xs" style="color:#6b6b7b;margin-top:-16px;">
+      No spam. No pressure. We're also introverts.
+    </p>
 
     <!-- Form error/success messages -->
     <p id="form-error" class="hidden text-sm" style="color:#f87171;">Please enter a valid email.</p>
     <div id="form-success" class="hidden fade-up rounded-xl px-6 py-4 text-sm text-center"
       style="background:rgba(145,71,255,0.15);border:1px solid rgba(145,71,255,0.3);color:#c4a4ff;">
-      You're on the list! 💜 Check <a href="https://discord.gg/d5UsBr9y" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">our Discord</a> for the community.
+      <svg style="display:inline;vertical-align:-3px;margin-right:5px;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c4a4ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>You're on the list! Check <a href="https://discord.gg/d5UsBr9y" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">our Discord</a> for the community.
     </div>
 
-    <!-- Social proof scroll -->
+    <!-- Social proof counter -->
+    <div id="social-proof" class="fade-up delay-550 flex items-center gap-2 text-xs" style="color:#6b6b7b;">
+      <span class="pulse-dot w-1.5 h-1.5 rounded-full inline-block" style="background:#9147ff;opacity:0.7;"></span>
+      <span id="social-proof-text">Early access · Limited spots</span>
+    </div>
+
+    <!-- Marquee -->
     <div class="fade-up delay-550 w-full overflow-hidden" style="mask-image:linear-gradient(to right,transparent,black 15%,black 85%,transparent);">
       <div class="marquee-track gap-8 text-xs" style="color:#6b6b7b;">
         {['r/Twitch', 'r/streaming', 'r/letsplay', 'r/contentcreators', 'Twitch Creator Camp', 'r/juststart', 'r/Twitch', 'r/streaming', 'r/letsplay', 'r/contentcreators', 'Twitch Creator Camp', 'r/juststart'].map(t => (
@@ -107,6 +118,22 @@
   const btn = document.getElementById('submit-btn') as HTMLButtonElement;
   const error = document.getElementById('form-error')!;
   const success = document.getElementById('form-success')!;
+
+  // Dynamic waitlist counter
+  (async () => {
+    try {
+      const res = await fetch(SCRIPT_URL + '?action=count', { mode: 'cors' });
+      if (!res.ok) return;
+      const data = await res.json();
+      const count = typeof data.count === 'number' ? data.count : null;
+      if (count !== null && count >= 10) {
+        const el = document.getElementById('social-proof-text');
+        if (el) el.textContent = `${count} streamers already in`;
+      }
+    } catch {
+      // silent fallback — default text stays
+    }
+  })();
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -132,7 +159,7 @@
       success.classList.remove('hidden');
     } catch {
       btn.disabled = false;
-      btn.textContent = 'Join the waitlist';
+      btn.textContent = 'Get my first challenge';
       error.textContent = 'Something went wrong. Try again.';
       error.classList.remove('hidden');
     }
@@ -140,6 +167,14 @@
 </script>
 
 <style>
+  @keyframes pulseDot {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.45); }
+  }
+  .pulse-dot {
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+
   @media (max-width: 1023px) {
     .hero-bars > div:nth-child(5n) { display: none; }
   }
